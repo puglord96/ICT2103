@@ -18,48 +18,63 @@
 include "header.inc.php";
 
 define("DBHOST", "localhost");
-define("DBNAME", "2103");
+define("DBNAME", "school");
 define("DBUSER", "root");
-define("DBPASS", "");
+define("DBPASS", "sceptile101");
 
 
-$fname = $lname = $email = $pwd = $cpwd = $errorMsg = "";
+
+$fname = $dob = $nationality = $nric = $email = $pwd = $cpwd = $cname = $cnric = $relate = $occupy = $add1 = $add2 = $errorMsg = "";
+$contact = 0;
 $success = true;
+
 if (empty($_POST["fname"]))
 {
-$errorMsg .= "First name is required.<br>";
+$errorMsg .= "Full is required.<br>";
 $success = false;
 }
 else
 {
 $fname = sanitize_input($_POST["fname"]);
-// Additional check to make sure e-mail address is well-formed.
-if (!preg_match("/^[a-zA-Z]+\s?[a-zA-Z]+$/", $fname))
-{
-$errorMsg .= "Invalid first name.<br>";
-$success = false;
-}
+
 }
 
-
-
-if (empty($_POST["lname"]))
+if (empty($_POST["dob"]))
 {
-$errorMsg .= "Last name is required.<br>";
+$errorMsg .= "Date of Birth is required.<br>";
 $success = false;
 }
 else
 {
-$lname = sanitize_input($_POST["lname"]);
+$dob = sanitize_input($_POST["dob"]);
 // Additional check to make sure e-mail address is well-formed.
-if (!preg_match("/^[a-zA-Z]{2,50}$/", $lname))
+
+}
+
+
+if (empty($_POST["nationality"]))
 {
-$errorMsg .= "Invalid last name.<br>";
+$errorMsg .= "Nationality is required.<br>";
 $success = false;
 }
+else
+{
+$nationality = sanitize_input($_POST["nationality"]);
+// Additional check to make sure e-mail address is well-formed.
+
 }
 
+if (empty($_POST["nric"]))
+{
+$errorMsg .= "Your NRIC is required.<br>";
+$success = false;
+}
+else
+{
+$nric = sanitize_input($_POST["nric"]);
+// Additional check to make sure e-mail address is well-formed.
 
+}
 
 
 if (empty($_POST["email"]))
@@ -88,12 +103,7 @@ $success = false;
 else
 {
 $pwd = sanitize_input($_POST["pwd"]);
-// Additional check to make sure e-mail address is well-formed.
-if (!preg_match("/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/", $pwd))
-{
-$errorMsg .= "Invalid password format.<br>";
-$success = false;
-}
+
 }
 
 
@@ -107,13 +117,86 @@ else
 {
 $cpwd = sanitize_input($_POST["cpwd"]);
 // Additional check to make sure e-mail address is well-formed.
-if (!preg_match("/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/", $cpwd))
+if ($cpwd != $pwd)
 {
-$errorMsg .= "Invalid Password format.";
+$errorMsg .= "Password Mismatch";
 $success = false;
 }
 }
 
+if (empty($_POST["contact"]))
+{
+$errorMsg .= "Your contact number is required.<br>";
+$success = false;
+}
+else
+{
+$contact = sanitize_input($_POST["contact"]);
+// Additional check to make sure e-mail address is well-formed.
+
+}
+
+if (empty($_POST["cname"]))
+{
+$errorMsg .= "Please enter your child's name.<br>";
+$success = false;
+}
+else
+{
+$cname = sanitize_input($_POST["cname"]);
+// Additional check to make sure e-mail address is well-formed.
+
+}
+
+
+
+if (empty($_POST["relate"]))
+{
+$errorMsg .= "Please enter the year of completion for your PSLE.<br>";
+$success = false;
+}
+else
+{
+$relate = sanitize_input($_POST["relate"]);
+// Additional check to make sure e-mail address is well-formed.
+
+}
+
+if (empty($_POST["occupy"]))
+{
+$errorMsg .= "Please enter the year of completion for your PSLE.<br>";
+$success = false;
+}
+else
+{
+$occupy = sanitize_input($_POST["occupy"]);
+// Additional check to make sure e-mail address is well-formed.
+
+}
+
+if (empty($_POST["add1"]))
+{
+$errorMsg .= "Please enter the year of completion for your PSLE.<br>";
+$success = false;
+}
+else
+{
+$add1 = sanitize_input($_POST["add1"]);
+// Additional check to make sure e-mail address is well-formed.
+
+}
+
+if (empty($_POST["add2"]))
+{
+$errorMsg .= "Please enter the year of completion for your PSLE.<br>";
+$success = false;
+}
+else
+{
+$add2 = sanitize_input($_POST["add2"]);
+// Additional check to make sure e-mail address is well-formed.
+
+}
 
 
 
@@ -150,7 +233,7 @@ include "footer.inc.php";
 
 
 function saveMemberToDB(){
-    global $fname, $lname, $email, $pwd, $errorMsg, $success;
+    global $fname, $dob, $nationality , $nric , $email , $pwd , $cpwd , $cname , $cnric , $add1 , $add2 , $contact , $relate , $occupy, $errorMsg;
     // Create connection
     $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
     //Check connection
@@ -160,7 +243,7 @@ function saveMemberToDB(){
     }
     else
     {
-    $sql = "INSERT INTO userlogin (firstname, lastname, email, password)";$sql .= " VALUES('$fname', '$lname', '$email', '$pwd')";
+    $sql = "INSERT INTO guard_info  VALUES('$nric', '$fname', '$pwd', '$contact', '$cname', '$relate', '$add1', '$add2', '$occupy')";
     // Execute the queryif (!$conn->query($sql))   
     if (!$conn->query($sql))
     {
