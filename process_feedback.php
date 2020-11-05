@@ -16,7 +16,7 @@
             include 'header.inc.php';
 
             define("DBHOST", "localhost");
-            define("DBNAME", "travel_photo");
+            define("DBNAME", "test");
             define("DBUSER", "root");
             define("DBPASS", "");
 
@@ -29,7 +29,7 @@
                     $success = false;
                 } 
             else {
-                $email = sanitize_input($_POST["email"]);
+                $email = $_POST["email"];
                 $name = $_POST["name"];                
                 $fbType = $_POST["fbType"];
                 $fb = $_POST["feedback"];
