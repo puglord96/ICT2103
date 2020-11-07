@@ -46,7 +46,7 @@ $success = false;
 }
 else
 {
-$dob = sanitize_input($_POST["dob"]);
+$dob = date('Y-m-d',strtotime(sanitize_input($_POST["dob"])));
 // Additional check to make sure e-mail address is well-formed.
 
 }
@@ -251,7 +251,7 @@ include "footer.inc.php";
 
 
 function saveMemberToDB(){
-    global $fname, $dob, $nationality , $nric , $email , $pwd , $cpwd , $mt , $gnric, $pschool , $add1 , $add2 , $contact , $agg , $pyear, $errorMsg;
+    global $fname, $dob, $nationality , $nric , $email , $pwd , $mt , $gnric, $pschool , $add1 , $add2 , $contact , $agg , $pyear, $errorMsg;
     // Create connection
     $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
     //Check connection
@@ -261,7 +261,9 @@ function saveMemberToDB(){
     }
     else
     {
-    $sql = "INSERT INTO guard_info  VALUES('$nric', '$fname', '$pwd', '$contact', '$cname', '$relate', '$add1', '$add2', '$occupy')";
+    $sql = "INSERT INTO student_info VALUES('$nric', '$gnric',0, '$fname', '$pwd',$agg,'$dob',$pyear,'$mt','$nationality','$pschool','$add1','$add2',$contact)";
+    
+    echo $sql;
     // Execute the queryif (!$conn->query($sql))   
     if (!$conn->query($sql))
     {

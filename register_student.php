@@ -72,7 +72,7 @@
       
       <div class="form-group">
       <label for="gnric">Guard NRIC:</label>
-      <input type="text" class="form-control" id="nric" placeholder="Enter email" pattern="(?i)^[STFG]\d{7}[A-Z]$" name="nric" required>
+      <input type="text" class="form-control" id="gnric" placeholder="Enter email" pattern="(?i)^[STFG]\d{7}[A-Z]$" name="gnric" required>
     </div> 
       
       <div class="form-group">
@@ -91,7 +91,6 @@
       <input type="text" class="form-control" id="mt" placeholder="Enter your Mother Tongue" name="mt" required>
     </div>
       
-
       
       <div class="form-group">
       <label for="pschool">Previous Primary School:</label>
