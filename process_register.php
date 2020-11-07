@@ -17,11 +17,11 @@
 <?php
 include "header.inc.php";
 
-define("DBHOST", "localhost");
-define("DBNAME", "school");
-define("DBUSER", "root");
-define("DBPASS", "sceptile101");
-
+   
+    define("DBHOST", "localhost");
+    define("DBNAME", "2103");
+    define("DBUSER", "root");
+    define("DBPASS", "");
 
 
 $fname = $dob = $nationality = $nric = $email = $gnric = $pwd = $cpwd = $mt = $pschool = $add1 = $add2 = $errorMsg = $gnric = $gname  = $relate = $gadd1 = $gadd2 = $occupy = $gnation= "";
@@ -353,7 +353,7 @@ function saveMemberToDB(){
     }
     else
     {
-    $sql1 = "INSERT INTO student_info VALUES('$nric',0, '$fname', '$pwd','$email',$agg,'$dob',$pyear,'$mt','$nationality','$pschool','$add1','$add2','$contact')";
+    $sql1 = "INSERT INTO student_info VALUES('$nric', '$fname', '$pwd','$email',$agg,'$dob',$pyear,'$mt','$nationality','$pschool','$add1','$add2','$contact')";
     $sql2 = "INSERT INTO guard_info VALUES('$gnric', '$nric','$gname','$gcontact','$relate','$gadd1','$gadd2','$occupy','$gnation')";
     
     echo $sql1."<br><br>";

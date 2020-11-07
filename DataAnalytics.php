@@ -1,8 +1,9 @@
-               <?php
+  <?php
+  include "header.inc.php";
  $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "test";
+$dbname = "2103";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password,$dbname);
@@ -68,7 +69,7 @@ if ($mostsubjectresult->num_rows > 0) {
 
 
 $conn->close();
-echo "Connected successfully";
+
 
 
 
@@ -179,41 +180,23 @@ chart.render();
 	}
 }
 </script>
-        <title></title>
-    </head>
 
-        <head>
-        <title>Jackson</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel= "stylesheet" href ="js/2103.js" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-        <script defer src="js/2103.js" type="text/javascript"></script>
-    </head>
-  <h1 style="margin-top:-10px;">*****</h1>
+  
     <body>
-        <?php
-        // put your code here
-        include "header.inc.php";
-        ?>
-
-
     <div class="container">
     <h2>Data Analysis</h2>
     <button onclick="COP_2019()"> Top 5 School in 2019</button>
     <button onclick="COP_2020()"> Top 5 School in  2020 </button>
-        <button onclick="Improved_COP()"> Top 5 most improved COP school from 2019-2020 </button>
-         <button onclick="Most_Subject()"> Most subjects offering </button>
+    <button onclick="Improved_COP()"> Top 5 most improved COP school from 2019-2020 </button>
+    <button onclick="Most_Subject()"> Most subjects offering </button>
 
- <div id="chartContainer" style="height: 370px; width: 100%;"></div>
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
     </body>
 
-            <?php
-        // put your code here
-        include "footer.inc.php";
-        ?>
+    <?php
+    // put your code here
+    include "footer.inc.php";
+    ?>
 </html>

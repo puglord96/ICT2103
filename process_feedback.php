@@ -1,22 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Feedback Page</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="css/main.css">
-        <link rel="stylesheet" type="text/css" href="css/feedback.css">
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    </head>
-    <body>
+    
         <?php
             include 'header.inc.php';
-
+            echo $_SESSION["name"];
+            echo $_SESSION["student_nric"];
             define("DBHOST", "localhost");
-            define("DBNAME", "travel_photo");
+            define("DBNAME", "2103");
             define("DBUSER", "root");
             define("DBPASS", "");
 
@@ -24,13 +12,13 @@
             $errorMsg = "";
             $email = "";
 
-            if (empty($_POST["email"]) || empty($_POST["name"]) || empty($_POST["feedback"])) {
+            if (empty($_POST["email"]) || empty($_POST["nric"]) || empty($_POST["feedback"])) {
                     $errorMsg .= "You have some fields left blank, please fill the empty fields.";
                     $success = false;
                 } 
             else {
                 $email = sanitize_input($_POST["email"]);
-                $name = $_POST["name"];                
+                $nric = $_POST["nric"];                
                 $fbType = $_POST["fbType"];
                 $fb = $_POST["feedback"];
 
@@ -51,12 +39,39 @@
                         $errorMsg = "Connection failed: " . $conn->connect_error;
                         $success = false;
                     }else{
+                            
                             $email = mysqli_real_escape_string($conn, $email);
-
-                            $stmt = $conn->prepare("INSERT INTO feedback (name, email, type_of_feedback, feedback_text) VALUES (?, ?, ?, ?)");
-                            $stmt->bind_param("ssss", $name, $email, $fbType, $fb);
+                            
+                            $stmt1 = "SELECT student_NRIC FROM student_info where student_NRIC = '". $nric ."'";
+                            $stmt2 = "SELECT guard_NRIC FROM guard_info where guard_NRIC = '". $nric ."'";
+                            
+                            $stmt1Res = $conn->query($stmt1);
+                            $stmt2Res = $conn->query($stmt2);
+                            
+                            if($stmt1Res->num_rows > 0){
+                                
+                            $stmt = $conn->prepare("INSERT INTO feedback (student_NRIC, email, type_of_feedback, feedback_text) VALUES (?, ?, ?, ?)");
+                            $stmt->bind_param("ssss", $nric, $email, $fbType, $fb);
 
                             $stmt->execute();
+                            $stmt->free_result();
+                            
+                            }else if($stmt2Res->num_rows > 0){
+                                
+                            $stmt = $conn->prepare("INSERT INTO feedback (guard_NRIC, email, type_of_feedback, feedback_text) VALUES (?, ?, ?, ?)");
+                            $stmt->bind_param("ssss", $nric, $email, $fbType, $fb);
+
+                            $stmt->execute();
+                            $stmt->free_result();
+                            }else{
+                                
+                                $errorMsg .= "NRIC does not exist";
+                                $success = false;
+                            }
+
+                            
+                            $stmt1Res->free_result();
+                            $stmt2Res->free_result();
                     }
                     $conn->close();
                 }
@@ -76,3 +91,14 @@
     </body>
     
 </html>
+<?php
+        function sanitize_input($data)
+        {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+        }
+
+
+?>

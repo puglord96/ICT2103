@@ -1,63 +1,69 @@
-<html>
-    
-    <head>
-        <meta charset="UTF-8">
-        <title></title>
-    </head>
-    <body>
-        <head>
-        <title>Jackson</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel= "stylesheet" href ="css.css" />
-        <link rel= "stylesheet" href ="images/" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-        <!--<script defer src="js/main.js" type="text/javascript"></script>-->
-    </head>
-    
-     <h1>   </h1>
+
+
+
+
 <?php
 include "header.inc.php";
+echo $_SESSION["name"];
+echo $_SESSION["student_nric"];
+
 
 define("DBHOST", "localhost");
 define("DBNAME", "2103");
 define("DBUSER", "root");
 define("DBPASS", "");
+saveMemberToDB();
 
 
-$fname = $lname = $email = $pwd = $cpwd = $errorMsg = "";
-    $photo = "moe.png";
-    echo  '<img src="images/MOE.png" alt="moe" class = "center"> ';
-    echo '<section class="container"><hr>';
-    echo "<h1>S1 OPTION FORM </h1>";
-    echo "<h2>Student's Particulars </h2>";
-    echo "<p>Name of students: </p>";
-    echo "<p>Primary School: </p>";
-    echo "<p>Year of PSLE: </p>";
-    echo "<p>PSLE Index No: </p>";
-    echo "<p>Citizenship: </p>";
-    echo "<p>PSLE Aggregate: </p>";
-    echo "<p>Course Eligible </p>";
-    saveMemberToDB();
+
 
 
 
 function saveMemberToDB(){
-    global $fname, $lname, $email, $pwd, $errorMsg, $success;
+    global $name, $nric, $errorMsg, $success;
     // Create connection
     $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
     //Check connection
     if ($conn->connect_error)
-    {$errorMsg = "Connection failed: " . $conn->connect_error;
-    $success = false;
+    {
+        $errorMsg = "Connection failed: " . $conn->connect_error;
+        $success = false;
     }
     else
     {
-    $sql = "INSERT INTO userlogin (firstname, lastname, email, password)";$sql .= " VALUES('$fname', '$lname', '$email', '$pwd')";
-    // Execute the queryif (!$conn->query($sql))   
-    if (!$conn->query($sql))
+    $sql = "SELECT * FROM school_posting where student_nric = '".$_SESSION["student_nric"]."'";    
+    $result = $conn->query($sql);
+    
+    if ($result->num_rows > 0){
+      
+    }
+    else{
+        $sql = "insert into school_posting (student_NRIC, student_Name) values('".$_SESSION["student_nric"]."', '".$_SESSION["name"]."')";
+        $result = $conn->query($sql);
+    }
+    $sql1 = "select name, previous_primary_school, year_of_PSLE,  nationality, psle_agg 
+            from student_info
+            where name = '".$_SESSION["name"]."'";
+    $result = $conn->query($sql1);
+    
+    if (!empty($result) && $result->num_rows > 0) {
+        while($row = $result->fetch_assoc())  {
+        $photo = "moe.png";
+        echo  '<img src="images/MOE.png" alt="moe" class = "center"> ';
+        echo '<section class="container"><hr>';
+        echo '<h1>S1 OPTION FORM </h1>';
+        echo '<h2>Students Particulars </h2>';
+        echo '<p>Name of students: '.$row["name"].'</p>';
+        echo '<p>Primary School:'.$row["previous_primary_school"].'</p>';
+        echo '<p>Year of PSLE: '.$row["year_of_PSLE"].'</p>';
+    //    echo "<p>PSLE Index No: </p>";
+        echo '<p>Citizenship: '.$row["nationality"].'</p>';
+        echo '<p>PSLE Aggregate: '.$row["psle_agg"].'</p>';
+        
+        
+        
+    }
+    }
     {
         $errorMsg = "Database error: " . $conn->error;
         $success = false;
@@ -66,6 +72,10 @@ function saveMemberToDB(){
   }
   $conn->close();
 }
+
+
+
+    
 ?>
      
      
@@ -75,25 +85,9 @@ function saveMemberToDB(){
     <body>    
     <div class="container">
     <h2>Parent's/ Guardian's Local Contact Details</h2>
-    <form name="myForm" action="process_login.php"  novalidate onsubmit="return validateForm()" method="post">
+    <form name="myForm" action="posting.php"  novalidate onsubmit="return validateForm()" method="post">
       
-      
-    <div class="form-group">
-    <label for="name">Name:</label>
-    <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
-    </div>
-      
-    <div class="form-group">
-    <label for="mobileNo">Mobile No:</label>
-    <input type="text" class="form-control" id="mobileNo" placeholder="Enter Mobile Number" name="mobileNo">
-    </div>
-      
-    <div class="form-group">
-    <label for="contactNo">Contact No:</label>
-    <input type="text" class="form-control" id="contactNo" placeholder="Enter Contact Number" name="contactNo">
-    </div>
-      
-      
+
     <h2>Choices of Secondary Schools</h2>  
     <h4>Please Enter 4-Digit Option Code </h4>
     <div class="form-group">
@@ -141,3 +135,97 @@ function saveMemberToDB(){
         ?>
 
 </html>
+
+
+
+<?php
+
+
+
+if (isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_POST["thirdchoice"])) && (isset($_POST["fourthchoice"]))
+         && (isset($_POST["fifthchoice"])) && (isset($_POST["sixthchoice"]))) 
+{
+
+    $firstchoice= $_POST["firstchoice"];
+    $secondchoice= $_POST["secondchoice"];
+    $thirdchoice= $_POST["thirdchoice"];
+    $fourthchoice= $_POST["fourthchoice"];
+    $fifthchoice= $_POST["fifthchoice"];
+    $sixthchoice= $_POST["sixthchoice"];
+    submitposting();
+    
+    
+   
+}  
+    
+    function submitposting(){
+        
+        global $firstchoice,$secondchoice,$thirdchoice, $fourthchoice,$fifthchoice, $sixthchoice,$clientid,$errorMsg, $success;
+         $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+         // Check connection
+         if ($conn->connect_error)
+         {
+             $errorMsg = "Connection failed: " . $conn->connect_error;
+             $success = false;
+         }
+         else
+         {
+         if(!empty($_POST["firstchoice"]) && (!empty($_POST["secondchoice"])) && (!empty($_POST["thirdchoice"]))
+                 && (!empty($_POST["fourthchoice"]))
+                 && (!empty($_POST["fifthchoice"]))
+                 && (!empty($_POST["sixthchoice"])))
+         
+        {
+             
+        $sql = "select r.posting_id
+                from ranking r, school_posting sp
+                where r.posting_id = sp.posting_id 
+                having posting_id = (select posting_id from school_posting where student_nric = '".$_SESSION["student_nric"]."') ;";    
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0){
+            echo "You have already submitted";
+        }
+        else {
+        
+        $sql = "select posting_id from student_info si , school_posting sp where si.student_nric = sp.student_nric and name = '".$_SESSION["name"]."'";
+        $result = $conn->query($sql);
+        
+        $rs = mysqli_fetch_array($result);
+        $clientid = $rs[0];
+        
+        $sql1 = "insert into ranking (school_id, posting_id, choice_number) VALUES($firstchoice, $clientid, 1)";
+        $sql2 = "insert into ranking (school_id, posting_id, choice_number) VALUES($secondchoice, $clientid, 2)";
+        $sql3 = "insert into ranking (school_id, posting_id, choice_number) VALUES($thirdchoice, $clientid, 3)";
+        $sql4 = "insert into ranking (school_id, posting_id, choice_number) VALUES($fourthchoice, $clientid, 4)";
+        $sql5 = "insert into ranking (school_id, posting_id, choice_number) VALUES($fifthchoice, $clientid, 5)";
+        $sql6 = "insert into ranking (school_id, posting_id, choice_number) VALUES($sixthchoice, $clientid, 6)";
+        
+        if (($conn->query($sql1) && $conn->query($sql2) && $conn->query($sql3) && $conn->query($sql4) && $conn->query($sql5)
+                && $conn->query($sql6))=== TRUE) 
+        {
+          echo "New record created successfully";
+          echo $firstchoice;
+          echo $secondchoice;
+          echo $thirdchoice;
+          echo $fourthchoice;
+          echo $fifthchoice;
+          echo $sixthchoice;
+          
+        } 
+        
+        else 
+        {
+          echo "Please no not submit again" . $conn->error;
+        }   
+         }
+         
+        }
+        else{
+            echo "Please fill up all 6 slots";
+        }
+        
+    }
+    $conn->close();
+}
+?>

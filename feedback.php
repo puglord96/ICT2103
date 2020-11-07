@@ -1,20 +1,4 @@
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Feedback Page</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="css/main.css">
-        <link rel="stylesheet" type="text/css" href="css/feedback.css">
-        <link href="css.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    </head>
-    
-
-    <h1>*****</h1>
     
     <?php
     include "header.inc.php";
@@ -28,8 +12,8 @@
     <form name="feedbackForm" method="post" action="process_feedback.php">
                         
     <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" class="form-control" id="name" name="name" placeholder="Your name..">
+    <label for="nric">NRIC</label>
+    <input type="text" class="form-control" id="nric" name="nric" placeholder="Your NRIC..">
     </div>
                     
                     

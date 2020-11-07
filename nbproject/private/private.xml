@@ -3,10 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Wong%20Kin%20Seong/Documents/GitHub/ICT2103/process_register_guard.php</file>
-            <file>file:/C:/Users/Wong%20Kin%20Seong/Documents/GitHub/ICT2103/process_register_student.php</file>
-            <file>file:/C:/Users/Wong%20Kin%20Seong/Documents/GitHub/ICT2103/register_student.php</file>
-            <file>file:/C:/Users/Wong%20Kin%20Seong/Documents/GitHub/ICT2103/register_guard.php</file>
+            <file>file:/C:/Xampp/htdocs/2103project/index.php</file>
+            <file>file:/C:/Xampp/htdocs/2103project/login.php</file>
+            <file>file:/C:/Xampp/htdocs/2103project/process_feedback.php</file>
+            <file>file:/C:/Xampp/htdocs/2103project/header.inc.php</file>
+            <file>file:/C:/Xampp/htdocs/2103project/feedback.php</file>
+            <file>file:/C:/Xampp/htdocs/2103project/posting.php</file>
         </group>
     </open-files>
 </project-private>

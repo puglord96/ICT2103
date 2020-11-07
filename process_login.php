@@ -1,44 +1,28 @@
-<head>
-        <meta charset="UTF-8">
-        <title></title>
-    </head>
-    <body>
-        <head>
-        <title>Jackson</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel= "stylesheet" href ="css/main.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-        <script defer src="js/main.js" type="text/javascript"></script>
-    </head>
-<h1>*****</h1>
 <?php
 
 // Constants for accessing our DB:
 define("DBHOST", "localhost");
-define("DBNAME", "travel_photo");
+define("DBNAME", "2103");
 define("DBUSER", "root");
 define("DBPASS", "");
 
 
 include "header.inc.php";
 
-$fname = $lname = $email = $pwd = $cpwd = $errorMsg = "";
+$name = $prevschool = $nric = $pwd = $cpwd = $errorMsg = "";
 $success = true;
 
 
-if (empty($_POST["email"]))
+if (empty($_POST["nric"]))
 {
-$errorMsg .= "Email is required.<br>";
+$errorMsg .= "NRIC is required.<br>";
 $success = false;
 }
 else
 {
-$email = sanitize_input($_POST["email"]);
+$nric = sanitize_input($_POST["nric"]);
 // Additional check to make sure e-mail address is well-formed.
-if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+if (!filter_var($nric, FILTER_VALIDATE_EMAIL))
 {
 $errorMsg .= "Invalid email format.";
 $success = false;
@@ -72,8 +56,9 @@ if ($success)
     echo '<section class="container"><hr>';
     echo "<h1>Login successful!</h1>";
     
-    echo "<p>welcome back, " . $fname ." " . $lname ."</p>";
-    echo '<a href="#login" class="btn btn-default" role="button">Login</a>  <a href="index.php" class="btn btn-default" role="button">Return to Home</a></section><hr>';
+    echo "<p>Welcome Back!</p>";
+    echo "<p>Name: ". $name ."</p>";
+    echo "<p>Previous School: " . $prevschool ."</p>";
 }
 else            
 {
@@ -98,7 +83,7 @@ return $data;
 
 function userlogin()
 {
-    global $fname,$lname,$email,$pwd, $errorMsg, $success;
+    global $name, $prevschool, $nric,$pwd, $errorMsg, $success;
     $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
     // Check connection
     if ($conn->connect_error)
@@ -109,8 +94,8 @@ function userlogin()
     else
     {
         
-        $sql = "SELECT * FROM travel_photo_members WHERE ";
-        $sql .= "email='$email' AND password='$pwd'";
+        $sql = "SELECT * FROM student_info WHERE ";
+        $sql .= "student_NRIC='$nric' AND password='$pwd'";
         // Execute the query
         $result = $conn->query($sql);
         if ($result->num_rows > 0)
@@ -119,14 +104,13 @@ function userlogin()
         // Note that email field is unique, so should only have
         // one row in the result set.
           $row = $result->fetch_assoc();
-            $fname = $row["fname"];
-            $lname = $row["lname"];
+
             $success = true;
         
         }
         else
         {
-            $errorMsg = "Email not found or password doesn't match...!";
+            $errorMsg = "NRIC not found or password doesn't match...!";
             $success = false;
         }
         $result->free_result();
