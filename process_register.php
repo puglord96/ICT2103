@@ -24,13 +24,105 @@ define("DBPASS", "sceptile101");
 
 
 
-$fname = $dob = $nationality = $nric = $email = $pwd = $cpwd = $cname = $cnric = $relate = $occupy = $add1 = $add2 = $errorMsg = "";
-$contact = 0;
+$fname = $dob = $nationality = $nric = $email = $gnric = $pwd = $cpwd = $mt = $pschool = $add1 = $add2 = $errorMsg = $gnric = $gname  = $relate = $gadd1 = $gadd2 = $occupy = $gnation= "";
+$contact = $agg = $pyear = $gcontact = 0;
 $success = true;
+
+if (empty($_POST["gnric"]))
+{
+$errorMsg .= "Parent/Guardian NRIC is required.<br>";
+$success = false;
+}
+else
+{
+$gnric = sanitize_input($_POST["gnric"]);
+
+}
+
+
+if (empty($_POST["gname"]))
+{
+$errorMsg .= "Parent/Guardian Name is required.<br>";
+$success = false;
+}
+else
+{
+$gname = sanitize_input($_POST["gname"]);
+
+}
+
+if (empty($_POST["gcontact"]))
+{
+$errorMsg .= "Parent/Guardian Name is required.<br>";
+$success = false;
+}
+else
+{
+$gcontact = sanitize_input($_POST["gcontact"]);
+
+}
+
+
+if (empty($_POST["relate"]))
+{
+$errorMsg .= "Parent/Guardian Name is required.<br>";
+$success = false;
+}
+else
+{
+$relate = sanitize_input($_POST["relate"]);
+
+}
+
+
+if (empty($_POST["gadd1"]))
+{
+$errorMsg .= "Parent/Guardian Address is required.<br>";
+$success = false;
+}
+else
+{
+$gadd1 = sanitize_input($_POST["gadd1"]);
+
+}
+
+
+if (empty($_POST["gadd2"]))
+{
+$errorMsg .= "Parent/Guardian Address is required.<br>";
+$success = false;
+}
+else
+{
+$gadd1 = sanitize_input($_POST["gadd2"]);
+
+}
+
+if (empty($_POST["occupy"]))
+{
+$errorMsg .= "Parent/Guardian Occupation is required.<br>";
+$success = false;
+}
+else
+{
+$occupy = sanitize_input($_POST["occupy"]);
+
+}
+
+if (empty($_POST["gnation"]))
+{
+$errorMsg .= "Parent/Guardian Nationality is required.<br>";
+$success = false;
+}
+else
+{
+$gnation = sanitize_input($_POST["gnation"]);
+
+}
 
 if (empty($_POST["fname"]))
 {
-$errorMsg .= "Full is required.<br>";
+$errorMsg .= "First name is required.<br>";
 $success = false;
 }
 else
@@ -46,7 +138,7 @@ $success = false;
 }
 else
 {
-$dob = sanitize_input($_POST["dob"]);
+$dob = date('Y-m-d',strtotime(sanitize_input($_POST["dob"])));
 // Additional check to make sure e-mail address is well-formed.
 
 }
@@ -103,6 +195,7 @@ $success = false;
 else
 {
 $pwd = sanitize_input($_POST["pwd"]);
+// Additional check to make sure e-mail address is well-formed.
 
 }
 
@@ -117,11 +210,7 @@ else
 {
 $cpwd = sanitize_input($_POST["cpwd"]);
 // Additional check to make sure e-mail address is well-formed.
-if ($cpwd != $pwd)
-{
-$errorMsg .= "Password Mismatch";
-$success = false;
-}
+
 }
 
 if (empty($_POST["contact"]))
@@ -136,40 +225,62 @@ $contact = sanitize_input($_POST["contact"]);
 
 }
 
-if (empty($_POST["cname"]))
+if (empty($_POST["gnric"]))
 {
-$errorMsg .= "Please enter your child's name.<br>";
+$errorMsg .= "Your Parent's NRIC is required.<br>";
 $success = false;
 }
 else
 {
-$cname = sanitize_input($_POST["cname"]);
+$gnric = sanitize_input($_POST["gnric"]);
 // Additional check to make sure e-mail address is well-formed.
 
 }
 
+if (empty($_POST["agg"]))
+{
+$errorMsg .= "Your PSLE aggregate score is required.<br>";
+$success = false;
+}
+else
+{
+$agg = sanitize_input($_POST["agg"]);
+// Additional check to make sure e-mail address is well-formed.
 
+}
 
-if (empty($_POST["relate"]))
+if (empty($_POST["pyear"]))
 {
 $errorMsg .= "Please enter the year of completion for your PSLE.<br>";
 $success = false;
 }
 else
 {
-$relate = sanitize_input($_POST["relate"]);
+$pyear = sanitize_input($_POST["pyear"]);
 // Additional check to make sure e-mail address is well-formed.
 
 }
 
-if (empty($_POST["occupy"]))
+if (empty($_POST["mt"]))
 {
 $errorMsg .= "Please enter the year of completion for your PSLE.<br>";
 $success = false;
 }
 else
 {
-$occupy = sanitize_input($_POST["occupy"]);
+$mt = sanitize_input($_POST["mt"]);
+// Additional check to make sure e-mail address is well-formed.
+
+}
+
+if (empty($_POST["pschool"]))
+{
+$errorMsg .= "Please enter the year of completion for your PSLE.<br>";
+$success = false;
+}
+else
+{
+$pschool = sanitize_input($_POST["pschool"]);
 // Additional check to make sure e-mail address is well-formed.
 
 }
@@ -197,7 +308,6 @@ $add2 = sanitize_input($_POST["add2"]);
 // Additional check to make sure e-mail address is well-formed.
 
 }
-
 
 
 
@@ -233,7 +343,7 @@ include "footer.inc.php";
 
 
 function saveMemberToDB(){
-    global $fname, $dob, $nationality , $nric , $email , $pwd , $cpwd , $cname , $cnric , $add1 , $add2 , $contact , $relate , $occupy, $errorMsg;
+    global $fname, $dob, $nationality , $nric , $email , $pwd , $mt , $gnric, $pschool , $add1 , $add2 , $contact , $agg , $pyear, $errorMsg ,$gnric , $gname  , $relate , $gadd1 , $gadd2, $occupy, $gcontact, $gnation;
     // Create connection
     $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
     //Check connection
@@ -243,9 +353,21 @@ function saveMemberToDB(){
     }
     else
     {
-    $sql = "INSERT INTO guard_info  VALUES('$nric', '$fname', '$pwd', '$contact', '$cname', '$relate', '$add1', '$add2', '$occupy')";
+    $sql1 = "INSERT INTO student_info VALUES('$nric',0, '$fname', '$pwd','$email',$agg,'$dob',$pyear,'$mt','$nationality','$pschool','$add1','$add2','$contact')";
+    $sql2 = "INSERT INTO guard_info VALUES('$gnric', '$nric','$gname','$gcontact','$relate','$gadd1','$gadd2','$occupy','$gnation')";
+    
+    echo $sql1."<br><br>";
+    echo $sql2."<br><br>";
+    
     // Execute the queryif (!$conn->query($sql))   
-    if (!$conn->query($sql))
+    if (!$conn->query($sql1))
+    {
+        $errorMsg = "Database error: " . $conn->error;
+        $success = false;
+        
+    }   
+    
+    if (!$conn->query($sql2))
     {
         $errorMsg = "Database error: " . $conn->error;
         $success = false;
