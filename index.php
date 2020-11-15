@@ -116,6 +116,7 @@
             $row = $result->fetch_assoc();
             $_SESSION["name"] = $row["name"];
             $_SESSION["student_nric"] = $row["student_NRIC"];
+            $_SESSION["student_email"] = $row["email"];
 
         // Note that email field is unique, so should only have
         // one row in the result set.
@@ -144,20 +145,30 @@
     <h4>Information such as School name | Cut Off Points | Academic Stream</h4>
     <form name="myForm" action="index.php"  novalidate onsubmit="return validateForm()" method="post">
       
+    <h3>Based PSLE Score Aggregate</h3>     
     <div class="form-group">      
     <label for="psleScore">Search by PSLE score:</label>
     <input type="number"  action="process_highest" class="form-control" id="psleScore" placeholder="Please Enter your PSLE Score" name="psleScore">
     <button id="searchHighest" >Search for highest school within cut off point</button>
     </div>
-        
+    </form>
+    
+    
+    
     <div id = "myDIV"> 
-        
-        
+    
+    <br>
+    <h3>Based on School Name</h3>   
+    <form name="genderAreaform" action="index.php"  novalidate onsubmit="return validateForm()" method="post">
     <div class="form-group" >
     <label for="search">Search by School Name:</label>
     <input list ="search" name ="search" class="form-control" id="browsers" placeholder="Search for basic school details" >
     <datalist id="search">
-    <option value="ADMIRALTY SECONDARY SCHOOL">
+    <?php 
+        schoollist();
+
+     ?>
+<!--    <option value="ADMIRALTY SECONDARY SCHOOL">
     <option value="AHMAD IBRAHIM SECONDARY SCHOOL">
     <option value="ANDERSON SECONDARY SCHOOL">
     <option value="ANG MO KIO SECONDARY SCHOOL">
@@ -315,14 +326,13 @@
     <option value="YUSOF ISHAK SECONDARY SCHOOL">
     <option value="YUYING SECONDARY SCHOOL">
     <option value="ZHENGHUA SECONDARY SCHOOL">
-    <option value="ZHONGHUA SECONDARY SCHOOL">
+    <option value="ZHONGHUA SECONDARY SCHOOL">-->
 
     </datalist>
     </div>
-   
     
-
-        
+    
+    <h3>Based on Type of school & Area</h3>    
     <div class="form-group">
     <label for ="area" >Area:</label>
     <input type="checkbox" id="North" name="area[]" value="North"><label for="North"> North</label>    
@@ -332,7 +342,10 @@
 
     </select>
     </div>
-        
+    
+    
+    
+  
     <div class="form-group">
     <label for ="schoolgender" >Please select school gender type:</label>
     
@@ -360,33 +373,71 @@
     </select>
     </div>
     
+    
+    <input type="submit" value = "Search based on School name or Type of School & Area" name= "indexbutton" class="btn btn-default">     
+    </form>
+    
+    
+        
+        
+        
+        
+    <br>
+    <br>
+    
+   
 
-    <input type="submit" value = "Search by School name or Gender with Area" name= "indexbutton" class="btn btn-default">     
-    <form name="genderAreaform" action="index.php"  novalidate onsubmit="return validateForm()" method="post">
-    
-    
-    
-    <br><br>
     <div class="form-group">
-    <label for="mrt">Choose MRT Station:</label>
+    <h3>Based on Transport</h3>
+    <label for="mrt">Search by MRT Station:</label>
+    <form name="transportform" action="index.php"  novalidate onsubmit="return validateForm()" method="post">
     <input type ="text" name ="mrt" class="form-control" id="mrt" placeholder="Search school by MRT" >
-    </div>
     <div class="form-group">
-    <label for="bus">Choose Bus Numbers:</label>
+    <label for="bus">Search by Bus Numbers:</label>
     <input type ="text" name ="bus" class="form-control" id="bus" placeholder="Search school by Bus" >
+    </div>
+    <input type="submit" value = "Search school by Transportation MRT or BUS" name= "transportbutton" class="btn btn-default">   
+    <br>
+    </form>
+
     </div>
     
     
     
     <br>
-    <input type="submit" value = "Search school by Transportation MRT or BUS" name= "transportbutton" class="btn btn-default">   
+    
+    <div class="form-group">
+    <h3>Based on CCA</h3>
+    <label for="schoolnamecca">Search by School Name:</label>
+    <form name="schoolnamecca" action="index.php"  novalidate onsubmit="return validateForm()" method="post">
+    <input list ="search" name ="schoolnamecca" class="form-control" id="browsers" placeholder="Search for basic school details" >
+    <datalist id="search">
+    <?php 
+        schoollist();
 
+     ?>
+    </datalist>
+    
+    <label for="typeofcca">Type of CCA:</label>
+    <select name="typeofcca" id="typeofcca">
+    <option value="'VISUAL AND PERFORMING ARTS'">VISUAL AND PERFORMING ARTS</option>
+    <option value="UNIFORMED GROUPS">UNIFORMED GROUPS   </option>
+    <option value="PHYSICAL SPORTS">PHYSICAL SPORTS</option>
+    <option value="CLUBS AND SOCIETIES">CLUBS AND SOCIETIES</option>
+    <option value="OTHERS">OTHERS</option>
+    
+    </select>
+    <br>
+    <input type="submit" value = "Search school by CCA" name= "ccabutton" class="btn btn-default"> 
     </form>
     </div>
+      
     
     
-    </form>
+
     
+    
+    </div>  <!-- do not delete this -->
     
     
     
@@ -488,13 +539,22 @@ elseif (isset($_POST["transportbutton"]) && isset($_POST["mrt"]) && isset($_POST
     transport();
 }
 
+
+elseif (isset($_POST["ccabutton"]) && isset($_POST["schoolnamecca"]) && isset($_POST["typeofcca"])){
+    $ccabutton = $_POST["ccabutton"];
+    $schoolnamecca = $_POST["schoolnamecca"];
+    $typeofcca= $_POST["typeofcca"];
+    
+    cca();
+    
+}
 else
 {
     
     echo"Remember to choose an area";
 }
 
-
+//schoollist(); //run schoollist function whenever page loaded
 
 function searchSchGenderbyArea()
 {
@@ -777,12 +837,119 @@ function transport()
     $conn->close();
 }
 
+global $sentToList;
+
+function schoollist()
+{
+    $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    // Check connection
+    if ($conn->connect_error)
+    {
+        $errorMsg = "Connection failed: " . $conn->connect_error;
+        $success = false;
+    }
+    else
+    {
+    
+            $sql = "SELECT school_name FROM school_info;";
+
+    
+        
+        // Execute the query
+        $result = $conn->query($sql);
+        if (!empty($result) && $result->num_rows > 0) {
+        // output data of each row
+                    while($row = $result->fetch_assoc())  {
+                        $sentToList = array();
+                        $sentToList[] = $row['school_name']; 
+                        $i = 0;
+                        //echo $sentToList[$i];
+                        echo '<option value=\'' .$sentToList[$i].'\'>';
+                        $i ++;
+                        
+                    }
+ 
+        }
+
+        else
+        {
+            $errorMsg = "Please select area, gender, and number of school";
+            $success = false;
+        }
+//        $result->free_result();
+    }
+    
+    
+   
+    $conn->close();
+}
 
 
+function cca(){
+    
+    
+    global $ccabutton,$schoolnamecca,$typeofcca,$errorMsg, $success;
+    $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+    // Check connection
+    if ($conn->connect_error)
+    {
+        $errorMsg = "Connection failed: " . $conn->connect_error;
+        $success = false;
+    }
+    else
+    {
+    if(isset($_POST["ccabutton"]) && (isset($_POST["schoolnamecca"])) && (isset($_POST["typeofcca"])) && (!empty($_POST["schoolnamecca"])))
+    {
+        
+        
+            $sql = "select sc.cca_name
+                    from school_cca sc
+                    where exists 
+                    (select si.school_id from school_info si where sc.school_id = si.school_id and si.school_name like '%$schoolnamecca%')
+                    and 
+                    (select si.school_id from school_info si where sc.school_id = si.school_id and sc.cca_grouping = '$typeofcca')";
+    
+        
+        // Execute the query
+        $result = $conn->query($sql);
+        if (!empty($result) && $result->num_rows > 0) {
+        // output data of each row
+                    echo '<br><br><br>';
+                    echo '<h2><u>RESULT FROM CCA</u></H2>';
+                    echo '<h3>School Selected:' .$schoolnamecca. ' <br>Type of CCA Selected: '. $typeofcca .'</h3>';
 
-
-
-
+                    echo '<br><br><br>';
+                    echo '<table class= "table">';
+                    echo '<tr>';
+                    echo'<th>CCA Available</th>';
+                    echo'</tr>';
+                    while($row = $result->fetch_assoc())  {
+                        echo '<tr>';
+                        echo '  <td>' . $row["cca_name"] . '</td>';
+                        echo '  </tr> ';                
+                    }
+                echo'</table>';
+        }
+        else {
+            echo "<script type='text/javascript'>alert('CCA is not available');</script>";
+        }
+        
+    }
+    
+        else
+        {
+            $errorMsg = "Please select area, gender, and number of school";
+            $success = false;
+        }
+//        $result->free_result();
+    }
+    
+    
+   
+    $conn->close();
+    
+    
+}
 
 
 ?>
