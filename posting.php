@@ -4,6 +4,20 @@
 
 <?php
 include "header.inc.php";
+
+
+if (empty($_SESSION["name"])) {
+$message = "Unauthorized access, please login or create account";
+echo "<script type='text/javascript'>alert('$message'); "
+        . "window.location.href='http://localhost/2103project/login.php';</script>";
+}
+else if (empty($_SESSION["student_nric"])) {
+    $message = "Unauthorized access, please login or create account";
+    echo "<script type='text/javascript'>alert('$message'); "
+        . "window.location.href='http://localhost/2103project/login.php';</script>";
+}
+    
+    
 echo $_SESSION["name"];
 echo $_SESSION["student_nric"];
 
