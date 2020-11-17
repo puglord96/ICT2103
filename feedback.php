@@ -2,6 +2,18 @@
     
     <?php
     include "header.inc.php";
+    
+    if (empty($_SESSION["name"])) {
+    $message = "Unauthorized access, please login or create account";
+    echo "<script type='text/javascript'>alert('$message'); "
+            . "window.location.href='http://localhost/2103project/login.php';</script>";
+    }
+    else if (empty($_SESSION["student_nric"])) {
+    $message = "Unauthorized access, please login or create account";
+    echo "<script type='text/javascript'>alert('$message'); "
+        . "window.location.href='http://localhost/2103project/login.php';</script>";
+    }
+  
     ?>
     
 <html>
@@ -87,8 +99,8 @@ function postfeedback(){
             VALUES ('".$_SESSION["student_nric"]."', '$fbType', '$feedback')";    
     $result = $conn->query($sql);
 
-    if ($conn->query($sql) == true) {
-        echo "You have already submitted";
+    if ($result) {
+        echo "You have already submitted: $feedback";
     }
     else{
         echo"Please try again";
