@@ -127,12 +127,14 @@ function saveMemberToDB(){
     <button type="submit" value = "Submit now" class="btn btn-default">Submit</button>
   </form>
   
-  
+ 
     </div>
+        
+         <form name="viewresult" action="posting.php"  novalidate onsubmit="return validateForm()" method="post">
+      <button type="submit" value = "Submit now" name = "resultbutton" class="btn btn-default">Check Submission</button>
+         </form>
     </body>
-<?php
-        include "footer.inc.php";
-        ?>
+
 
 </html>
 
@@ -153,14 +155,19 @@ if (isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_
     $fifthchoice= $_POST["fifthchoice"];
     $sixthchoice= $_POST["sixthchoice"];
     submitposting();
-    
+  
     
    
 }  
+ elseif (isset($_POST["resultbutton"])) {
+     $resultbutton = $_POST["resultbutton"];
+     viewresult();
     
+}
     function submitposting(){
         
-        global $firstchoice,$secondchoice,$thirdchoice, $fourthchoice,$fifthchoice, $sixthchoice,$clientid,$errorMsg, $success;
+        global $firstchoice,$secondchoice,$thirdchoice, $fourthchoice,$fifthchoice, $sixthchoice,$clientid,$errorMsg, 
+                $success, $school_id, $school_name, $resultbutton;
          $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
          // Check connection
          if ($conn->connect_error)
@@ -184,8 +191,11 @@ if (isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
-            echo "You have already submitted";
+            echo "You have already submitted <br>";
+
         }
+
+        
         else {
         
         $sql = "select posting_id from student_info si , school_posting sp where si.student_nric = sp.student_nric and name = '".$_SESSION["name"]."'";
@@ -204,13 +214,37 @@ if (isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_
         if (($conn->query($sql1) && $conn->query($sql2) && $conn->query($sql3) && $conn->query($sql4) && $conn->query($sql5)
                 && $conn->query($sql6))=== TRUE) 
         {
-          echo "New record created successfully";
-          echo $firstchoice;
-          echo $secondchoice;
-          echo $thirdchoice;
-          echo $fourthchoice;
-          echo $fifthchoice;
-          echo $sixthchoice;
+            $sql = "select choice_number, r.school_id, school_name 
+                    from school_info s, ranking r
+                    where s.school_id= r.school_id
+                    and posting_id = $clientid
+                    order by choice_number";
+            
+            $result = $conn->query($sql);
+            if (!empty($result) && $result->num_rows > 0) {
+        // output data of each row
+                    echo '<br><br><br>';
+                    echo '<h2><u>Your Selection for 6 chosen schools</u></H2>';
+
+
+                    echo '<table class= "table">';
+                    echo '<tr>';
+                    echo'<th>Choice</th>
+                        <th>School ID You Have Selected:</th>
+                        <th>School Name</th>';
+                    echo'</tr>';
+                    while($row = $result->fetch_assoc())  {
+                        echo '<tr>';
+                        echo '  <td><b>' . $row["choice_number"] . '<b></td>';
+                        echo '  <td><b>' . $row["school_id"] . '<b></td>';
+                        echo '  <td><b>' . $row["school_name"] . '<b></td>';
+                        echo '  </tr> ';                
+                    }
+                echo'</table>';
+        }
+
+          
+          
           
         } 
         
@@ -228,4 +262,69 @@ if (isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_
     }
     $conn->close();
 }
-?>
+
+
+
+
+function viewresult(){
+    global $feedbackbutton,$fbType,$feedback, $errorMsg, $success;
+     $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+     // Check connection
+     if ($conn->connect_error)
+     {
+         $errorMsg = "Connection failed: " . $conn->connect_error;
+         $success = false;
+     }
+     else
+     {
+     if(isset($_POST["resultbutton"]))
+    {
+         
+    $sql =  "select choice_number, r.school_id, school_name 
+            from school_info s, ranking r
+            where s.school_id= r.school_id
+            and posting_id = ( SELECT posting_id FROM school_posting where student_name = '".$_SESSION["name"]."')
+            order by choice_number
+            ";    
+    $result = $conn->query($sql);
+    
+    $result = $conn->query($sql);
+            if (!empty($result) && $result->num_rows > 0) {
+        // output data of each row
+                    echo '<br><br><br>';
+                    echo '<h2><u>Your Selection for 6 chosen schools</u></H2>';
+
+
+                    echo '<table class= "table">';
+                    echo '<tr>';
+                    echo'<th>Choice</th>
+                        <th>School ID You Have Selected:</th>
+                        <th>School Name</th>';
+                    echo'</tr>';
+                    while($row = $result->fetch_assoc())  {
+                        echo '<tr>';
+                        echo '  <td><b>' . $row["choice_number"] . '<b></td>';
+                        echo '  <td><b>' . $row["school_id"] . '<b></td>';
+                        echo '  <td><b>' . $row["school_name"] . '<b></td>';
+                        echo '  </tr> ';                
+                    }
+                echo'</table>';
+        }
+
+    if ($conn->query($sql) == true) {
+        echo "You have already submitted";
+    }
+    else{
+        echo"Please try again";
+    }
+
+        
+    }
+         }
+    $conn->close();
+    
+}
+
+
+        include "footer.inc.php";
+        ?>
