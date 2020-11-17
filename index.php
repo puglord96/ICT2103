@@ -2,17 +2,16 @@
     <?php
     // put your code here    
     include "header.inc.php";
-
-
-    echo $_SESSION["name"] ;
-    echo $_SESSION["student_nric"]; 
-
+//    echo '<script>$window.location.reload();</script>';
+    
+        echo $_SESSION["name"];
+        echo $_SESSION["student_nric"];
     ?>
     
         
         
    <?php
-   
+    
     define("DBHOST", "localhost");
     define("DBNAME", "2103");
     define("DBUSER", "root");
@@ -57,32 +56,7 @@
     }
     }
 
-    if (isset($_POST["nric"]) && (isset($_POST["pwd"])))
-    {
-    userlogin();
-    
-    
-
-    if ($success)   
-    {
-
-        echo '<section class="container"><hr>';
-        echo "<h1>Login successful!</h1>";
-
-        echo "<p>Welcome Back, " .$name ."</p>";
-
-        echo "<p>Previous School: " . $prevschool ."</p>";
-    }
-    else            
-    {
-        $message = "Username or password is incorrect";
-        echo "<script type='text/javascript'>alert('$message'); window.location.href='http://localhost/2103project/login.php';</script>";
-
-        
-    }
-
-
-    }
+   
     //Helper function that checks input for malicious or unwanted content.
     function sanitize_input($data)
     {
@@ -120,11 +94,12 @@
 
         // Note that email field is unique, so should only have
         // one row in the result set.
+            
           
             $name = $row["name"];
             $prevschool = $row["previous_primary_school"];
             $success = true;
-        
+            
         }
         else
         {
@@ -136,6 +111,41 @@
     $conn->close();
 }
 
+
+
+
+
+
+ if (isset($_POST["nric"]) && (isset($_POST["pwd"])))
+    {
+    userlogin();
+    
+    
+
+    if ($success)   
+    {
+        
+        echo '<section class="container"><hr>';
+        echo "<h1>Login successful!</h1>";
+
+        echo "<p>Welcome Back, " .$name ."</p>";
+
+        echo "<p>Previous School: " . $prevschool ."</p>";
+        echo $_SESSION["name"];
+        echo $_SESSION["student_nric"];
+        
+    }
+    else            
+    {
+        $message = "Username or password is incorrect";
+        echo "<script type='text/javascript'>alert('$message'); window.location.href='http://localhost/2103project/login.php';</script>";
+
+        
+    }
+
+
+    }
+    
 
    ?>
 <html>
@@ -851,7 +861,7 @@ function schoollist()
     else
     {
     
-            $sql = "SELECT school_name FROM school_info;";
+            $sql = "SELECT school_name FROM school_info order by school_name;";
 
     
         
