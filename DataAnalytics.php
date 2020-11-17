@@ -99,16 +99,16 @@
 
 
 
-    $SchoolinArea = "SELECT zone_code , count(*) as NoOfSchool
+    $SchoolinZone = "SELECT zone_code , count(*) as NoOfSchool
     FROM school_info
     group by zone_code
     having count(*) >1 ;";
-    $SchoolinAreaResult = $conn->query($SchoolinArea);
-        $SchoolinAreaArray = array();
-    if ($SchoolinAreaResult->num_rows > 0) {
+    $SchoolinZoneResult = $conn->query($SchoolinZone);
+        $SchoolinZoneArray = array();
+    if ($SchoolinZoneResult->num_rows > 0) {
       // output data of each row
-      while($SchoolinArearow = $SchoolinAreaResult->fetch_assoc()) {
-            array_push($SchoolinAreaArray,array("label"=> $SchoolinArearow["zone_code"], "y"=> $SchoolinArearow["NoOfSchool"],"index"=> $SchoolinArearow["NoOfSchool"]));       
+      while($SchoolinZonerow = $SchoolinZoneResult->fetch_assoc()) {
+            array_push($SchoolinZoneArray,array("label"=> $SchoolinZonerow["zone_code"], "y"=> $SchoolinZonerow["NoOfSchool"],"index"=> $SchoolinZonerow["NoOfSchool"]));       
         }
 
     } else {
@@ -116,6 +116,47 @@
     }
 
 
+    
+    $SchoolinArea = "SELECT dgp_code , count(*) as NoOfSchool
+FROM school_info
+group by dgp_code
+having count(*) >1 
+order by NoofSchool desc
+limit 10;";
+    $SchoolinAreaResult = $conn->query($SchoolinArea);
+        $SchoolinAreaArray = array();
+    if ($SchoolinAreaResult->num_rows > 0) {
+      // output data of each row
+      while($SchoolinArearow = $SchoolinAreaResult->fetch_assoc()) {
+            array_push($SchoolinAreaArray,array("label"=> $SchoolinArearow["dgp_code"], "y"=> $SchoolinArearow["NoOfSchool"],"index"=> $SchoolinArearow["NoOfSchool"]));       
+        }
+
+    } else {
+      echo "0 results";
+    }
+    
+    
+    
+    
+    
+    
+    $Ccagrouping = "SELECT cca_grouping , count(*) as NoOfCCA
+    FROM school_cca
+    group by cca_grouping
+    having count(*) >1 
+    order by NoOfCCA desc
+    limit 10;";
+    $CcagroupingResult = $conn->query($Ccagrouping);
+        $CcagroupingArray = array();
+    if ($CcagroupingResult->num_rows > 0) {
+      // output data of each row
+      while($Ccagroupingrow = $CcagroupingResult->fetch_assoc()) {
+            array_push($CcagroupingArray,array("label"=> $Ccagroupingrow["cca_grouping"], "y"=> $Ccagroupingrow["NoOfCCA"],"index"=> $Ccagroupingrow["NoOfCCA"]));       
+        }
+
+    } else {
+      echo "0 results";
+    }
 
     $conn->close();
 
@@ -260,13 +301,40 @@
 
 
 
-    function SchoolByArea () {
+    function SchoolByZone () {
     var chart = new CanvasJS.Chart("chartContainer", {
             animationEnabled: true,
             exportEnabled: true,
             theme: "light1", // "light1", "light2", "dark1", "dark2"
             title:{
-                    text: "Total number of schools in each area region"
+                    text: "Total number of schools in each Zone"
+            },
+            axisY:{
+                    includeZero: true
+            },
+            data: [{
+                    type: "column", //change type to bar, line, area, pie, etc
+                    indexLabel: "{y}", //Shows y value on all Data Points
+                    indexLabelFontColor: "#5A5757",
+                    indexLabelPlacement: "outside",
+                    dataPoints: <?php echo json_encode($SchoolinZoneArray, JSON_NUMERIC_CHECK); ?>
+            }]
+    });
+    chart.render();
+
+    }
+
+
+
+
+
+function SchoolByArea() {
+    var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            exportEnabled: true,
+            theme: "light1", // "light1", "light2", "dark1", "dark2"
+            title:{
+                    text: "Total number of schools in each Area"
             },
             axisY:{
                     includeZero: true
@@ -282,7 +350,35 @@
     chart.render();
 
     }
+    
+    
+    
+    
+    
+    
+    
+    function ccagrouping() {
+    var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            exportEnabled: true,
+            theme: "light1", // "light1", "light2", "dark1", "dark2"
+            title:{
+                    text: "Total number of CCAs for each category"
+            },
+            axisY:{
+                    includeZero: true
+            },
+            data: [{
+                    type: "column", //change type to bar, line, area, pie, etc
+                    indexLabel: "{y}", //Shows y value on all Data Points
+                    indexLabelFontColor: "#5A5757",
+                    indexLabelPlacement: "outside",
+                    dataPoints: <?php echo json_encode($CcagroupingArray, JSON_NUMERIC_CHECK); ?>
+            }]
+    });
+    chart.render();
 
+    }
 
     </script>
 
@@ -295,7 +391,9 @@
         <button onclick="Improved_COP()"> Top 5 most improved COP school from 2019-2020 </button>
         <button onclick="Most_Subject()"> Most subjects offering </button>
         <button onclick="MOST_CCA()"> Most CCA offering </button>
+        <button onclick="SchoolByZone()"> Total No.Of.School by Zone </button>
         <button onclick="SchoolByArea()"> Total No.Of.School by Area </button>
+        <button onclick="ccagrouping()"> Total No.Of.CCAs based on category </button>
         <div id="chartContainer" style="height: 370px; width: 100%;"></div>
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
