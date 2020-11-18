@@ -1,7 +1,9 @@
 
 <?php
     include "header.inc.php";
-    
+    if (isset($_POST['submit'])) {
+        $_SESSION['name'] = $_POST['name'];
+    }
     ?>
 <!--<style>
     .collapse navbar-collapse{
@@ -12,7 +14,7 @@
     <div class="container">
   <h2>Member Registration</h2>
   <h4>For existing members, Please go to the login page</h4>
-  <form name="myForm" action="index.php"  novalidate onsubmit="return validateForm()" method="post">
+  <form name="myForm" action="process_login.php"  novalidate onsubmit="return validateForm()" method="post">
       
       
     <div class="form-group">
