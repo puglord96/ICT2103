@@ -106,34 +106,34 @@ function saveMemberToDB(){
     <h4>Please Enter 4-Digit Option Code </h4>
     <div class="form-group">
     <label for="firstchoice">First Choice:</label>
-    <input type="text" class="form-control" id="firstchoice" placeholder="Enter First Choice" name="firstchoice">
+    <input type="number" class="form-control" id="firstchoice" placeholder="Enter First Choice" name="firstchoice">
     </div>
     
     <div class="form-group">
     <label for="secondchoice">Second Choice:</label>
-    <input type="text" class="form-control" id="secondchoice" placeholder="Enter Second Choice" name="secondchoice">
+    <input type="number" class="form-control" id="secondchoice" placeholder="Enter Second Choice" name="secondchoice">
     </div>
     
     <div class="form-group">
     <label for="thirdchoice">Third Choice:</label>
-    <input type="text" class="form-control" id="thirdchoice" placeholder="Enter Third Choice" name="thirdchoice">
+    <input type="number" class="form-control" id="thirdchoice" placeholder="Enter Third Choice" name="thirdchoice">
     </div>
     
     
     <div class="form-group">
     <label for="fourthchoice">Fourth Choice:</label>
-    <input type="text" class="form-control" id="fourthchoice" placeholder="Enter Fourth Choice" name="fourthchoice">
+    <input type="number" class="form-control" id="fourthchoice" placeholder="Enter Fourth Choice" name="fourthchoice">
     </div>
     
     
     <div class="form-group">
     <label for="fifthchoice">Fifth Choice:</label>
-    <input type="text" class="form-control" id="fifthchoice" placeholder="Enter Fifth Choice" name="fifthchoice">
+    <input type="number" class="form-control" id="fifthchoice" placeholder="Enter Fifth Choice" name="fifthchoice">
     </div>
     
     <div class="form-group">
     <label for="sixthchoice">Sixth Choice:</label>
-    <input type="text" class="form-control" id="sixthchoice" placeholder="Enter Sixth Choice" name="sixthchoice">
+    <input type="number" class="form-control" id="sixthchoice" placeholder="Enter Sixth Choice" name="sixthchoice">
     </div>
     
     
@@ -213,17 +213,35 @@ if (isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_
         else {
         
         $sql = "select posting_id from student_info si , school_posting sp where si.student_nric = sp.student_nric and name = '".$_SESSION["name"]."'";
-        $result = $conn->query($sql);
         
+        $result = $conn->query($sql);
         $rs = mysqli_fetch_array($result);
         $clientid = $rs[0];
         
-        $sql1 = "insert into ranking (school_id, posting_id, choice_number) VALUES($firstchoice, $clientid, 1)";
-        $sql2 = "insert into ranking (school_id, posting_id, choice_number) VALUES($secondchoice, $clientid, 2)";
-        $sql3 = "insert into ranking (school_id, posting_id, choice_number) VALUES($thirdchoice, $clientid, 3)";
-        $sql4 = "insert into ranking (school_id, posting_id, choice_number) VALUES($fourthchoice, $clientid, 4)";
-        $sql5 = "insert into ranking (school_id, posting_id, choice_number) VALUES($fifthchoice, $clientid, 5)";
-        $sql6 = "insert into ranking (school_id, posting_id, choice_number) VALUES($sixthchoice, $clientid, 6)";
+        $cars = array($firstchoice,$secondchoice,$thirdchoice,$fourthchoice,$fifthchoice,$sixthchoice);
+        $unique_colors = array_unique($cars);
+        $duplicates = count($cars) - count($unique_colors); //if result more than 1, means there is duplicate
+        
+        
+        $sql = "SELECT school_id FROM school_info;";
+        $schoolIDresult = $conn->query($sql);
+         while($row = mysqli_fetch_assoc($schoolIDresult)) {
+            $players[] = $row['school_id']; 
+         }
+        //print_r($players);
+
+        $cmpresult = array_diff($cars,$players);
+        //print_r(count($cmpresult));
+        
+        if ($duplicates<1 ){
+            if (((count($cmpresult))==0)){
+            
+        $sql1 = "insert into ranking (school_id, posting_id, choice_number) VALUES($cars[0], $clientid, 1)";
+        $sql2 = "insert into ranking (school_id, posting_id, choice_number) VALUES($cars[1], $clientid, 2)";
+        $sql3 = "insert into ranking (school_id, posting_id, choice_number) VALUES($cars[2], $clientid, 3)";
+        $sql4 = "insert into ranking (school_id, posting_id, choice_number) VALUES($cars[3], $clientid, 4)";
+        $sql5 = "insert into ranking (school_id, posting_id, choice_number) VALUES($cars[4], $clientid, 5)";
+        $sql6 = "insert into ranking (school_id, posting_id, choice_number) VALUES($cars[5], $clientid, 6)";
         
         if (($conn->query($sql1) && $conn->query($sql2) && $conn->query($sql3) && $conn->query($sql4) && $conn->query($sql5)
                 && $conn->query($sql6))=== TRUE) 
@@ -264,10 +282,25 @@ if (isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_
         
         else 
         {
-          echo "Please no not submit again" . $conn->error;
+          $message = "One of your School ID is invalid, please try again!";
+            echo "<script type='text/javascript'>alert('$message'); "
+            . "window.location.href='http://localhost/2103project/posting.php';</script>";
+            
         }   
          }
-         
+        
+        else{
+            $message = "Invalid School ID!";
+            echo "<script type='text/javascript'>alert('$message'); "
+            . "window.location.href='http://localhost/2103project/posting.php';</script>";
+        }
+        }
+         else{
+             $message = "Duplicate School ID";
+            echo "<script type='text/javascript'>alert('$message'); "
+            . "window.location.href='http://localhost/2103project/posting.php';</script>";
+         }
+        }
         }
         else{
             echo "Please fill up all 6 slots";
@@ -324,13 +357,12 @@ function viewresult(){
                     }
                 echo'</table>';
         }
-
-    if ($conn->query($sql) == true) {
-        echo "You have already submitted";
-    }
-    else{
-        echo"Please try again";
-    }
+        else{
+            $message = "Please fill up all 6 slots and submit a form in order to view submission!";
+            echo "<script type='text/javascript'>alert('$message'); "
+            . "window.location.href='http://localhost/2103project/posting.php';</script>";
+        }
+   
 
         
     }
