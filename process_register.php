@@ -353,7 +353,7 @@ function saveMemberToDB(){
     }
     else
     {
-    $sql1 = "INSERT INTO student_info VALUES('$nric', '$fname', '$pwd','$email',$agg,'$dob',$pyear,'$mt','$nationality','$pschool','$add1','$add2','$contact')";
+    $sql1 = "INSERT INTO student_info VALUES('$nric', '$fname', '$pwd','$agg','$dob',$pyear,'$mt','$nationality','$pschool','$add1','$add2','$contact','$email')";
     $sql2 = "INSERT INTO guard_info VALUES('$gnric', '$nric','$gname','$gcontact','$relate','$gadd1','$gadd2','$occupy','$gnation')";
     
     echo $sql1."<br><br>";
