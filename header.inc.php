@@ -44,6 +44,8 @@ session_start();
                 <li><a href="DataAnalytics.php"class="datanalytics">Data Analytics</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li><a href="register.php"class="register"><span class="glyphicon glyphicon-pencil"></span> Sign-up</a></li>
+                <li><a href="login.php"class="login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 <li><a href="session_destroy.php"class="logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                 
             </ul>
