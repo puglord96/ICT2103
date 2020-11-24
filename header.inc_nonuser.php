@@ -42,6 +42,7 @@ session_start();
                 <li><a href="posting.php"class="posting">Posting</a></li>
                 <li><a href="feedback.php"class="feedback">Feedback</a></li>
                 <li><a href="DataAnalytics.php"class="datanalytics">Data Analytics</a></li>
+                <li><a href="updateinfo.php"class="datanalytics">Update info</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="register.php"class="register"><span class="glyphicon glyphicon-pencil"></span> Sign-up</a></li>
