@@ -53,10 +53,7 @@ function saveMemberToDB(){
     }
     else{
         $sql = "insert into school_posting (student_NRIC, student_Name) values('".$_SESSION["student_nric"]."', '".$_SESSION["name"]."')";
-        
         $result = $conn->query($sql);
-        
-        
     }
     $sql1 = "select name, previous_primary_school, year_of_PSLE,  nationality, psle_agg 
             from student_info
@@ -92,31 +89,7 @@ function saveMemberToDB(){
 
 
 
-function showStudentPrevSelection(){
-      global $findschool_idarray, $errorMsg, $success;
-    // Create connection
-    $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-    //Check connection
-    if ($conn->connect_error)
-    {
-        $errorMsg = "Connection failed: " . $conn->connect_error;
-        $success = false;
-    }
-    else
-    {
-        $sqlfindschool_id = "SELECT  school_id 
-                            FROM school_posting sp, ranking r
-                            where sp.posting_id =r.posting_id 
-                            and student_NRIC = '".$_SESSION["student_nric"]."'";
-        $findschool_idresult = $conn->query($sqlfindschool_id);
-        while($row = mysqli_fetch_assoc($findschool_idresult)) {
-            $findschool_idarray[] = $row['school_id']; 
-        }
-        
-    }
-     $conn->close();
-}
-
+    
 ?>
      
      
@@ -133,46 +106,39 @@ function showStudentPrevSelection(){
     <h4>Please Enter 4-Digit Option Code </h4>
     <div class="form-group">
     <label for="firstchoice">First Choice:</label>
-    <input type="number" class="form-control" id="firstchoice" 
-           placeholder="<?php showStudentPrevSelection(); echo "Previously submitted for First Choice:". $findschool_idarray[0];?>" name="firstchoice">
+    <input type="number" class="form-control" id="firstchoice" placeholder="Enter First Choice" name="firstchoice">
     </div>
     
     <div class="form-group">
     <label for="secondchoice">Second Choice:</label>
-    <input type="number" class="form-control" id="secondchoice" 
-           placeholder="<?php showStudentPrevSelection(); echo "Previously submitted for First Choice:". $findschool_idarray[1];?>"name="secondchoice">
+    <input type="number" class="form-control" id="secondchoice" placeholder="Enter Second Choice" name="secondchoice">
     </div>
     
     <div class="form-group">
     <label for="thirdchoice">Third Choice:</label>
-    <input type="number" class="form-control" id="thirdchoice" 
-           placeholder="<?php showStudentPrevSelection(); echo "Previously submitted for First Choice:". $findschool_idarray[2];?>" name="thirdchoice">
+    <input type="number" class="form-control" id="thirdchoice" placeholder="Enter Third Choice" name="thirdchoice">
     </div>
     
     
     <div class="form-group">
     <label for="fourthchoice">Fourth Choice:</label>
-    <input type="number" class="form-control" id="fourthchoice" 
-           placeholder="<?php showStudentPrevSelection(); echo "Previously submitted for First Choice:". $findschool_idarray[3];?>" name="fourthchoice">
+    <input type="number" class="form-control" id="fourthchoice" placeholder="Enter Fourth Choice" name="fourthchoice">
     </div>
     
     
     <div class="form-group">
     <label for="fifthchoice">Fifth Choice:</label>
-    <input type="number" class="form-control" id="fifthchoice" 
-           placeholder = "<?php showStudentPrevSelection(); echo "Previously submitted for First Choice:". $findschool_idarray[4];?>" name="fifthchoice">
+    <input type="number" class="form-control" id="fifthchoice" placeholder="Enter Fifth Choice" name="fifthchoice">
     </div>
     
     <div class="form-group">
     <label for="sixthchoice">Sixth Choice:</label>
-    <input type="number" class="form-control" id="sixthchoice" 
-           placeholder="<?php showStudentPrevSelection(); echo "Previously submitted for First Choice:". $findschool_idarray[5];?>" name="sixthchoice">
+    <input type="number" class="form-control" id="sixthchoice" placeholder="Enter Sixth Choice" name="sixthchoice">
     </div>
     
     
       
-    <button type="submit" value = "Submit now" name="submitbutton" class="btn btn-default">Submit</button>
-    <button type="submit" value = "Update now" name="updatebutton" class="btn btn-default">Update</button>
+    <button type="submit" value = "Submit now" class="btn btn-default">Submit</button>
   </form>
   
  
@@ -193,16 +159,15 @@ function showStudentPrevSelection(){
 
 
 if (isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_POST["thirdchoice"])) && (isset($_POST["fourthchoice"]))
-         && (isset($_POST["fifthchoice"])) && (isset($_POST["sixthchoice"])) && (isset($_POST["submitbutton"]))) 
+         && (isset($_POST["fifthchoice"])) && (isset($_POST["sixthchoice"]))) 
 {
 
-    $firstchoice = $_POST["firstchoice"];
-    $secondchoice = $_POST["secondchoice"];
-    $thirdchoice = $_POST["thirdchoice"];
-    $fourthchoice = $_POST["fourthchoice"];
-    $fifthchoice = $_POST["fifthchoice"];
-    $sixthchoice = $_POST["sixthchoice"];
-    $submitbutton = $_POST["submitbutton"];
+    $firstchoice= $_POST["firstchoice"];
+    $secondchoice= $_POST["secondchoice"];
+    $thirdchoice= $_POST["thirdchoice"];
+    $fourthchoice= $_POST["fourthchoice"];
+    $fifthchoice= $_POST["fifthchoice"];
+    $sixthchoice= $_POST["sixthchoice"];
     submitposting();
   
     
@@ -213,25 +178,6 @@ if (isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_
      viewresult();
     
 }
-elseif(isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_POST["thirdchoice"])) && (isset($_POST["fourthchoice"]))
-         && (isset($_POST["fifthchoice"])) && (isset($_POST["sixthchoice"])) && (isset($_POST["updatebutton"]))) 
-{
-
-    $firstchoice = $_POST["firstchoice"];
-    $secondchoice = $_POST["secondchoice"];
-    $thirdchoice = $_POST["thirdchoice"];
-    $fourthchoice = $_POST["fourthchoice"];
-    $fifthchoice = $_POST["fifthchoice"];
-    $sixthchoice = $_POST["sixthchoice"];
-    $updatebutton = $_POST["updatebutton"];
-    updateposting();
-  
-    
-   
-}  
-
-
-
     function submitposting(){
         
         global $firstchoice,$secondchoice,$thirdchoice, $fourthchoice,$fifthchoice, $sixthchoice,$clientid,$errorMsg, 
@@ -357,9 +303,7 @@ elseif(isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset
         }
         }
         else{
-             $message = "Please fill up all 6 slots";
-            echo "<script type='text/javascript'>alert('$message'); "
-            . "window.location.href='http://localhost/2103project/posting.php';</script>";
+            echo "Please fill up all 6 slots";
         }
         
     }
@@ -428,75 +372,5 @@ function viewresult(){
 }
 
 
-
-function updateposting(){
-    global $firstchoice,$secondchoice,$thirdchoice, $fourthchoice,$fifthchoice, $sixthchoice,$clientid,$errorMsg, 
-                $success, $school_id, $school_name, $resultbutton;
-     $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
-     // Check connection
-     if ($conn->connect_error)
-     {
-         $errorMsg = "Connection failed: " . $conn->connect_error;
-         $success = false;
-     }
-     else
-    {
-          if(isset($_POST["updatebutton"]))
-            {
-         
-            $sql =  "SELECT posting_id FROM school_posting where student_NRIC = '".$_SESSION["student_nric"]."' ";    
-            $result = $conn->query($sql);
-            while($row = mysqli_fetch_assoc($result)) {
-                    $posting_idForUpdate[] = $row['posting_id']; 
-            }
-        $cars = array($firstchoice,$secondchoice,$thirdchoice,$fourthchoice,$fifthchoice,$sixthchoice);
-        $unique_colors = array_unique($cars);
-        $duplicates = count($cars) - count($unique_colors); //if result more than 1, means there is duplicate
-        
-        
-        $sql = "SELECT school_id FROM school_info;";
-        $schoolIDresult = $conn->query($sql);
-         while($row = mysqli_fetch_assoc($schoolIDresult)) {
-            $players[] = $row['school_id']; 
-         }
-        //print_r($players);
-
-        $cmpresult = array_diff($cars,$players);
-        //print_r(count($cmpresult));
-        
-        if ($duplicates<1 ){
-            if (((count($cmpresult))==0)){    
-    
-    $sql1 = "update ranking set school_id = $firstchoice where posting_id = $posting_idForUpdate[0] and choice_number = '1' ";
-    $sql2 = "update ranking set school_id = $secondchoice where posting_id = $posting_idForUpdate[0] and choice_number = '2' ";
-    $sql3 = "update ranking set school_id = $thirdchoice where posting_id = $posting_idForUpdate[0] and choice_number = '3' ";
-    $sql4 = "update ranking set school_id = $fourthchoice where posting_id = $posting_idForUpdate[0] and choice_number = '4' ";
-    $sql5 = "update ranking set school_id = $fifthchoice where posting_id = $posting_idForUpdate[0] and choice_number = '5' ";
-    $sql6 = "update ranking set school_id = $sixthchoice where posting_id = $posting_idForUpdate[0] and choice_number = '6' ";
-
-    if (($conn->query($sql1) && $conn->query($sql2) && $conn->query($sql3) && $conn->query($sql4) && $conn->query($sql5)
-                && $conn->query($sql6))=== TRUE) 
-        {
-        $message = "All slots updated";
-            echo "<script type='text/javascript'>alert('$message'); "
-            . "window.location.href='http://localhost/2103project/posting.php';</script>";
-        }
-        
-    }
-    else{
-            $message = "Invalid School ID!";
-            echo "<script type='text/javascript'>alert('$message'); "
-            . "window.location.href='http://localhost/2103project/posting.php';</script>";
-        }
-    }
-        else{
-             $message = "Duplicate School ID";
-            echo "<script type='text/javascript'>alert('$message'); "
-            . "window.location.href='http://localhost/2103project/posting.php';</script>";
-         }
-         
-            }   
-    }
-}
         include "footer.inc.php";
         ?>
