@@ -14,7 +14,7 @@
      $servername = "localhost";
     $username = "root";
     $password = "";
-    $dbname = "2103";
+    $dbname = "test";
 
     // Create connection
     $conn = new mysqli($servername, $username, $password,$dbname);
@@ -24,7 +24,7 @@
       die("Connection failed: " . $conn->connect_error);
     }
 
-    $cop_2019 = "SELECT cop2019.express, SI.school_name FROM school_cop_2019 cop2019 , school_info SI WHERE cop2019.school_id = SI.school_id ORDER BY cop2019.express DESC LIMIT 10";
+    $cop_2019 = "SELECT cop2019.express, SI.school_name FROM school_cop_2019 cop2019 , school_info SI WHERE cop2019.school_id = SI.school_id ORDER BY cop2019.express DESC LIMIT 5";
     $result = $conn->query($cop_2019);
         $dataPoints = array();
     if ($result->num_rows > 0) {
@@ -37,7 +37,7 @@
       echo "0 results";
     }
 
-    $cop_2020 = "SELECT cop2020.express, SI.school_name FROM school_cop_2020 cop2020 , school_info SI WHERE cop2020.school_id = SI.school_id ORDER BY cop2020.express DESC LIMIT 10";
+    $cop_2020 = "SELECT cop2020.express, SI.school_name FROM school_cop_2020 cop2020 , school_info SI WHERE cop2020.school_id = SI.school_id ORDER BY cop2020.express DESC LIMIT 5";
     $result2020 = $conn->query($cop_2020);
         $dataPoints2020 = array();
     if ($result2020->num_rows > 0) {
@@ -63,7 +63,7 @@
       echo "0 results";
     }
 
-    $mostsubject = "SELECT count(SS.subject_desc) AS totalsub,SI.school_name FROM school_subject SS, school_info SI WHERE SS.school_id = SI.school_id AND SS.subject_desc NOT LIKE 'H1%' OR 'H2%' OR 'H3%' GROUP BY SI.school_name ORDER BY totalsub ASC LIMIT 10";
+    $mostsubject = "SELECT count(SS.subject_desc) AS totalsub,SI.school_name FROM school_subject SS, school_info SI WHERE SS.school_id = SI.school_id AND SS.subject_desc NOT LIKE 'H1%' OR 'H2%' OR 'H3%' GROUP BY SI.school_name ORDER BY totalsub DESC LIMIT 5";
     $mostsubjectresult = $conn->query($mostsubject);
         $mostsubjectdataPoints = array();
     if ($mostsubjectresult->num_rows > 0) {
@@ -84,7 +84,7 @@
                     group by school_name
                     having count(*) >1
                     order by count(*) desc
-                    limit 10";
+                    limit 5";
     $MostNumberOfCCAresult = $conn->query($MostNumberOfCCA);
         $MostNumberOfCCAarray = array();
     if ($MostNumberOfCCAresult->num_rows > 0) {
@@ -386,8 +386,8 @@ function SchoolByArea() {
         <body>
         <div class="container">
         <h2>Data Analysis</h2>
-        <button onclick="COP_2019()"> Top 10 School in 2019</button>
-        <button onclick="COP_2020()"> Top 10 School in  2020 </button>
+        <button onclick="COP_2019()"> Top 5 School in 2019</button>
+        <button onclick="COP_2020()"> Top 5 School in  2020 </button>
         <button onclick="Improved_COP()"> Top 5 most improved COP school from 2019-2020 </button>
         <button onclick="Most_Subject()"> Most subjects offering </button>
         <button onclick="MOST_CCA()"> Most CCA offering </button>
