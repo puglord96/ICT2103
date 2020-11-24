@@ -250,7 +250,7 @@ limit 10;";
             exportEnabled: true,
             theme: "light1", // "light1", "light2", "dark1", "dark2"
             title:{
-                    text: "Top 5 most improved cop school  from 2019 to 2020"
+                    text: "Top 5 most subject school"
             },
             axisY:{
                     includeZero: true
