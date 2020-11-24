@@ -13,8 +13,7 @@
     echo "<script type='text/javascript'>alert('$message'); "
         . "window.location.href='http://localhost/2103project/login.php';</script>";
 }
-        echo $_SESSION["name"];
-        echo $_SESSION["student_nric"];
+
     ?>
     
         
@@ -28,9 +27,7 @@
     
     
 
- if (isset($_POST["nric"]) && (isset($_POST["pwd"])))
-    {
-    userlogin();
+$success = true;
     
     
 
@@ -40,11 +37,12 @@
         echo '<section class="container"><hr>';
         echo "<h1>Login successful!</h1>";
 
-        echo "<p>Welcome Back, " .$name ."</p>";
-
-        echo "<p>Previous School: " . $prevschool ."</p>";
-        echo $_SESSION["name"];
-        echo $_SESSION["student_nric"];
+        echo "<p>Welcome Back :" .$_SESSION["name"] ."!</p>";
+        echo "<p>Previous School : " . $_SESSION["previous_primary_school"] ."</p>";
+        echo "<p>NRIC : " . $_SESSION["student_nric"]."</p>";
+        echo "<p>psle : " . $_SESSION["PSLE_agg"]."</p>";
+        
+        
         
     }
     else            
@@ -56,7 +54,7 @@
     }
 
 
-    }
+    
     
 
    ?>

@@ -1,6 +1,6 @@
 
 <?php
-    include "header.inc.php";
+    include "header.inc_nonuser.php";
     if (isset($_POST['submit'])) {
         $_SESSION['name'] = $_POST['name'];
     }
@@ -12,8 +12,8 @@
 </style>-->
     <body>
     <div class="container">
-  <h2>Member Registration</h2>
-  <h4>For existing members, Please go to the login page</h4>
+  <h2>Member Login</h2>
+  <h4>For new members, please go to the sign-up page</h4>
   <form name="myForm" action="process_login.php"  novalidate onsubmit="return validateForm()" method="post">
       
       
