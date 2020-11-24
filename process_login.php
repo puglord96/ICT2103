@@ -100,6 +100,8 @@ return $data;
             $row = $result->fetch_assoc();
             $_SESSION["name"] = $row["name"];
             $_SESSION["student_nric"] = $row["student_NRIC"];
+            $_SESSION["PSLE_agg"] = $row["PSLE_agg"];
+            $_SESSION["previous_primary_school"] = $row["previous_primary_school"];
             $_SESSION["student_email"] = $row["email"];
 
         // Note that email field is unique, so should only have
