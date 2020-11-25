@@ -26,14 +26,14 @@ define("DBHOST", "localhost");
 define("DBNAME", "2103");
 define("DBUSER", "root");
 define("DBPASS", "");
-saveMemberToDB();
+studentprofile();
 
 
 
 
 
 
-function saveMemberToDB(){
+function studentprofile(){
     global $name, $nric, $errorMsg, $success;
     // Create connection
     $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
@@ -173,14 +173,15 @@ function showStudentPrevSelection(){
       
     <button type="submit" value = "Submit now" name="submitbutton" class="btn btn-default">Submit</button>
     <button type="submit" value = "Update now" name="updatebutton" class="btn btn-default">Update</button>
+    <button type="submit" value = "Delete" name="deletebutton" class="btn btn-default">Delete</button>
   </form>
   
  
     </div>
         
-         <form name="viewresult" action="posting.php"  novalidate onsubmit="return validateForm()" method="post">
-      <button type="submit" value = "Submit now" name = "resultbutton" class="btn btn-default">Check Submission</button>
-         </form>
+        <form name="viewresult" action="posting.php"  novalidate onsubmit="return validateForm()" method="post">
+        <button type="submit" value = "Submit now" name = "resultbutton" class="btn btn-default">Check Submission</button>
+        </form>
     </body>
 
 
@@ -204,7 +205,7 @@ if (isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset($_
     $sixthchoice = $_POST["sixthchoice"];
     $submitbutton = $_POST["submitbutton"];
     submitposting();
-  
+    echo '<script>window.location = \'http://localhost/2103project/posting.php\';</script>';
     
    
 }  
@@ -224,15 +225,17 @@ elseif(isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset
     $fifthchoice = $_POST["fifthchoice"];
     $sixthchoice = $_POST["sixthchoice"];
     $updatebutton = $_POST["updatebutton"];
-    updateposting();
-  
-    
-   
-}  
+    updateposting();  
+    echo '<script>window.location = \'http://localhost/2103project/posting.php\';</script>';
+}
+elseif(isset($_POST["deletebutton"])){
+    deleteposting();
+}
 
 
 
-    function submitposting(){
+
+function submitposting(){
         
         global $firstchoice,$secondchoice,$thirdchoice, $fourthchoice,$fifthchoice, $sixthchoice,$clientid,$errorMsg, 
                 $success, $school_id, $school_name, $resultbutton;
@@ -305,6 +308,7 @@ elseif(isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset
                     where s.school_id= r.school_id
                     and posting_id = $clientid
                     order by choice_number";
+                    
             
             $result = $conn->query($sql);
             if (!empty($result) && $result->num_rows > 0) {
@@ -327,6 +331,8 @@ elseif(isset($_POST["firstchoice"]) && (isset($_POST["secondchoice"])) && (isset
                         echo '  </tr> ';                
                     }
                 echo'</table>';
+                
+                
         }
 
           
@@ -496,6 +502,37 @@ function updateposting(){
          }
          
             }   
+    }
+}
+
+
+
+function deleteposting(){
+     global $feedbackbutton,$fbType,$feedback, $errorMsg, $success;
+     $conn = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+     // Check connection
+     if ($conn->connect_error)
+     {
+         $errorMsg = "Connection failed: " . $conn->connect_error;
+         $success = false;
+     }
+     else
+     {
+     if(isset($_POST["deletebutton"]))
+    {
+    $sql = "SELECT posting_id from school_posting where student_NRIC = '".$_SESSION["student_nric"]."'";     
+    $result = $conn->query($sql);
+    $rs = mysqli_fetch_array($result);
+    $clientid = $rs[0];
+    $sql1 =  "DELETE FROM ranking where posting_id = $rs[0] ";    
+
+    $result1 = $conn->query($sql1);
+            if ($result1 == TRUE) {
+                $message = "All records in posting deleted";
+                echo "<script type='text/javascript'>alert('$message'); "
+                . "window.location.href='http://localhost/2103project/posting.php';</script>";
+            }
+    }
     }
 }
         include "footer.inc.php";
