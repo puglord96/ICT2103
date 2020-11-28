@@ -18,13 +18,13 @@
     
     <h1>*****</h1>
 <?php
-        include "header.inc.php";
+        include "header.inc_nonuser_1.php";
         ?>
 
     <body>
     <div class="container" id="RegForm">
   <h2>Student Sign Up</h2>
-  <h4>For existing members, Please go to the login page</h4>
+  <h4>For students who already got account, Please go to the login page</h4>
   <form name="myForm" id="myForm" action="process_register.php" novalidate onsubmit="return validateForm()" method="post">
       
     <div class="form-group">
