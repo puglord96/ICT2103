@@ -45,7 +45,7 @@ session_start();
                 <li><a href="updateinfo.php"class="datanalytics">Update info</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="login.php.php"class="register"><span class="glyphicon glyphicon-pencil"></span> Log-in</a></li>
+                <li><a href="login.php"class="register"><span class="glyphicon glyphicon-pencil"></span> Log-in</a></li>
                 
             </ul>
         </div> 
