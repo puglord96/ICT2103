@@ -3,6 +3,7 @@
     <?php
     include "header.inc.php";
     
+    //check session ensure user must login
     if (empty($_SESSION["name"])) {
     $message = "Unauthorized access, please login or create account";
     echo "<script type='text/javascript'>alert('$message'); "
@@ -103,9 +104,10 @@ function updateEmailPw(){
     $sql = "update student_info 
             set password = $updatepw, email = '".$_SESSION["student_email"]."'
             where student_NRIC = '".$_SESSION["student_nric"]."' "; 
+    // update student_info table password and student email field based on student_nric
     
     $result = $conn->query($sql);
-    echo '<script> window.location.reload(); </script>';
+//    echo '<script> window.location.reload(); </script>';
     
 //    $sql1 = "SELECT email FROM student_info where student_NRIC = '".$_SESSION["student_nric"]."'";
 //    $result1 = $conn->query($sql1);
@@ -117,7 +119,9 @@ function updateEmailPw(){
          
         echo "New password updated: $updatepw <br>";
         echo "New email updated: $updatemail";
-        
+        $message = "New password updated:". $updatepw." and New email updated: $updatemail";
+            echo "<script type='text/javascript'>alert('$message'); "
+            . "window.location.href='http://localhost/2103project/updateinfo.php';</script>";
     }
 //        }
     else{

@@ -1,6 +1,7 @@
 
     <?php
-    // put your code here    
+    // put your code here  
+    //check session ensure user must login
     include "header.inc.php";
 //    echo '<script>$window.location.reload();</script>';
     if (empty($_SESSION["name"])) {
@@ -13,6 +14,7 @@
     echo "<script type='text/javascript'>alert('$message'); "
         . "window.location.href='http://localhost/2103project/login.php';</script>";
 }
+
 
     ?>
     
@@ -490,8 +492,9 @@ function searchSchGenderbyArea()
     {
     if(isset($_POST["area"]) && (isset($_POST["schoolgender"])) && (isset($_POST["NoOfSchool"]))){
         for ($i=0; $i<sizeof ($area);$i++) {  
-            $sql = "Create view SchoolGenderView AS select school_id, school_name, url_address,mrt,bus, zone_code, school_gender_code 
-                    from school_info";
+            $sql = "Create view SchoolGenderView AS select school_id, school_name,
+                    url_address,mrt,bus, zone_code, school_gender_code from school_info";
+            //created view for simplicity
             
             
             $sql = " select *
@@ -499,6 +502,9 @@ function searchSchGenderbyArea()
                      where zone_code = ('".$area[$i]. "') 
                      and school_gender_code = '$schoolgender'
                      limit $NoOfSchool";
+            //reuse schoolgenderview  view and use select statement based on area_zone,sch_gender 
+            //area_zone such as north, south, east, west
+            //sch_gender based on boy school, girl school, or both
     
         
         // Execute the query
@@ -566,11 +572,12 @@ function search(){
     if ((isset($_POST["search"])) &&  (isset($_POST["NoOfSchool"])) && (!empty($_POST["search"])))
         {
         
-            $sql = "create view BasicSchoolDetails AS SELECT school_id, school_name, url_address, address, postal_code, contact, email, mrt, bus
-                    from school_info";
-                    
+            $sql = "create view BasicSchoolDetails AS SELECT school_id, school_name, url_address, 
+                    address, postal_code, contact, email, mrt, bus from school_info";
+                    //created view for simplicity
                     
             $sql = "SELECT * from BasicSchoolDetails where school_name like '%$search%' limit $NoOfSchool";
+                    //select BasicSchoolDetails view and search using LIKE function based on user input
             $result = $conn->query($sql);
                     if (!empty($result) && $result->num_rows > 0) {
         // output data of each row
@@ -644,6 +651,8 @@ function cop()
                 and school_cop_2019.$stream  is not null and school_cop_2020.$stream is not null
                 order by school_cop_2020.$stream $order
                 limit $NoOfSchool_cop;";
+        //comparison between 2019 cop and 2020 cop
+        //virtually column "difference" is created
                 
         // Execute the query
         $result = $conn->query($sql);
@@ -706,14 +715,14 @@ function transport()
     {
     if(isset($_POST["transportbutton"]) && (isset($_POST["mrt"])) && (isset($_POST["bus"])) && (!empty($_POST["mrt"])) ||    (!empty($_POST["bus"]))){
             $sql = "create view transportView AS select school_id, school_name, mrt, bus from school_info";
-        
+                    //created  transportView view for simplicity
         
             $sql = "select * from transportView
                     where mrt like '%$mrt%'
                     union 
                     select * from transportView
-                    where mrt like '%$bus%'";
-    
+                    where bus like '%$bus%'";
+            // reuse the transportView view and use LIKE function to union both mrt and bus select statement
         
         // Execute the query
         $result = $conn->query($sql);
@@ -772,6 +781,7 @@ function schoollist()
     {
     
             $sql = "SELECT school_name FROM school_info order by school_name;";
+            //retrieve school list for html dropdown value
 
     
         
@@ -825,9 +835,11 @@ function cca(){
             $sql = "select sc.cca_name
                     from school_cca sc
                     where exists 
-                    (select si.school_id from school_info si where sc.school_id = si.school_id and si.school_name like '%$schoolnamecca%')
+                    (select si.school_id from school_info si where sc.school_id = si.school_id 
+                    and si.school_name like '%$schoolnamecca%')
                     and 
-                    (select si.school_id from school_info si where sc.school_id = si.school_id and sc.cca_grouping = '$typeofcca')";
+                    (select si.school_id from school_info si where sc.school_id = si.school_id 
+                    and sc.cca_grouping = '$typeofcca')";
     
         
         // Execute the query

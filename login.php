@@ -19,12 +19,12 @@
       
     <div class="form-group">
       <label for="nric">NRIC:</label>
-      <input type="nric" class="form-control" id="nric" placeholder="Enter NRIC" value="s9181818H" name="nric">
+      <input type="nric" class="form-control" id="nric" placeholder="Enter NRIC"  name="nric">
     </div>
       
     <div class="form-group">
       <label for="pwd">Password:</label>
-      <input type="password" class="form-control" id="pwd" placeholder="Enter password" value="123" name="pwd">
+      <input type="password" class="form-control" id="pwd" placeholder="Enter password"  name="pwd">
     </div>
       
     <button type="submit" value = "Submit now" class="btn btn-default">Submit</button>

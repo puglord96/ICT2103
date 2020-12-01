@@ -1,6 +1,7 @@
     <?php
     include "header.inc.php";
 
+    //check session ensure user must login
     if (empty($_SESSION["name"])) {
     $message = "Unauthorized access, please login or create account";
     echo "<script type='text/javascript'>alert('$message'); "
@@ -11,10 +12,10 @@
         echo "<script type='text/javascript'>alert('$message'); "
             . "window.location.href='http://localhost/2103project/login.php';</script>";
     }
-     $servername = "localhost";
+    $servername = "localhost";
     $username = "root";
     $password = "";
-    $dbname = "test";
+    $dbname = "2103";
 
     // Create connection
     $conn = new mysqli($servername, $username, $password,$dbname);
@@ -63,7 +64,11 @@
       echo "0 results";
     }
 
-    $mostsubject = "SELECT count(SS.subject_desc) AS totalsub,SI.school_name FROM school_subject SS, school_info SI WHERE SS.school_id = SI.school_id AND SS.subject_desc NOT LIKE 'H1%' OR 'H2%' OR 'H3%' GROUP BY SI.school_name ORDER BY totalsub DESC LIMIT 5";
+    $mostsubject = "SELECT count(SS.subject_desc) AS totalsub,SI.school_name "
+            . "FROM school_subject SS, school_info SI "
+            . "WHERE SS.school_id = SI.school_id AND SS.subject_desc "
+            . "NOT LIKE 'H1%' OR 'H2%' OR 'H3%' GROUP BY SI.school_name "
+            . "ORDER BY totalsub DESC LIMIT 5";
     $mostsubjectresult = $conn->query($mostsubject);
         $mostsubjectdataPoints = array();
     if ($mostsubjectresult->num_rows > 0) {

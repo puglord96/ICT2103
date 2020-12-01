@@ -93,6 +93,7 @@ return $data;
         
         $sql = "SELECT * FROM student_info WHERE ";
         $sql .= "student_NRIC='$nric' AND password='$pwd'";
+        // select statement to check user exist in database
         // Execute the query
         $result = $conn->query($sql);
         if ($result->num_rows > 0)
@@ -103,7 +104,7 @@ return $data;
             $_SESSION["PSLE_agg"] = $row["PSLE_agg"];
             $_SESSION["previous_primary_school"] = $row["previous_primary_school"];
             $_SESSION["student_email"] = $row["email"];
-
+        // set session variables that will be used throughout the pages
         // Note that email field is unique, so should only have
         // one row in the result set.
             

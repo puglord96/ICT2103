@@ -67,13 +67,13 @@
       
       <div class="form-group">
       <label for="contact">Contact No:</label>
-      <input type="number" class="form-control" id="contact" placeholder="Enter email" name="contact" required>
+      <input type="number" class="form-control" id="contact" placeholder="Enter contact no" name="contact" required>
     </div>
       
       
       <div class="form-group">
       <label for="agg">PSLE Aggregate Score:</label>
-      <input type="number" class="form-control" id="agg" placeholder="Enter your PSLE Aggregate Score" pattern="^\d{2,3}$" name="agg" required>
+      <input type="number" class="form-control" id="agg" placeholder="Enter your PSLE aggregate score" pattern="^\d{2,3}$" name="agg" required>
     </div>
      
       
@@ -122,12 +122,12 @@
       
       <div class="form-group">
       <label for="relate">Relationship to Child/Ward: </label>
-      <input type="text" class="form-control" id="relate" placeholder="" name="relate" required>
+      <input type="text" class="form-control" id="relate" placeholder="Enter your relationship to child" name="relate" required>
     </div> 
       
       <div class="form-group">
       <label for="gnation">Nationality</label>
-      <input type="text" class="form-control" id="gnation" placeholder="" name="gnation" required>
+      <input type="text" class="form-control" id="gnation" placeholder="Enter your nationality" name="gnation" required>
     </div> 
       
       

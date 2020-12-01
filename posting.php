@@ -5,7 +5,7 @@
 <?php
 include "header.inc.php";
 
-
+//check session ensure user must login
 if (empty($_SESSION["name"])) {
 $message = "Unauthorized access, please login or create account";
 echo "<script type='text/javascript'>alert('$message'); "
@@ -18,8 +18,7 @@ else if (empty($_SESSION["student_nric"])) {
 }
     
     
-echo $_SESSION["name"];
-echo $_SESSION["student_nric"];
+
 
 
 define("DBHOST", "localhost");
@@ -46,6 +45,8 @@ function studentprofile(){
     else
     {
     $sql = "SELECT * FROM school_posting where student_nric = '".$_SESSION["student_nric"]."'";    
+    //each time student enter this posting.php page, this function will run and 
+    //check school_posting table if this particular student_nric exist
     $result = $conn->query($sql);
     
     if ($result->num_rows > 0){
@@ -53,7 +54,7 @@ function studentprofile(){
     }
     else{
         $sql = "insert into school_posting (student_NRIC, student_Name) values('".$_SESSION["student_nric"]."', '".$_SESSION["name"]."')";
-        
+        //if student_nric does not exist then new posting_id will be assign
         $result = $conn->query($sql);
         
         
@@ -61,6 +62,7 @@ function studentprofile(){
     $sql1 = "select name, previous_primary_school, year_of_PSLE,  nationality, psle_agg 
             from student_info
             where name = '".$_SESSION["name"]."'";
+    // this select query is to display student info such as name, prev school, psle year, nationality.
     $result = $conn->query($sql1);
     
     if (!empty($result) && $result->num_rows > 0) {
@@ -108,6 +110,7 @@ function showStudentPrevSelection(){
                             FROM school_posting sp, ranking r
                             where sp.posting_id =r.posting_id 
                             and student_NRIC = '".$_SESSION["student_nric"]."'";
+        // this select query is to get student previous submission of all 6 choices 
         $findschool_idresult = $conn->query($sqlfindschool_id);
         while($row = mysqli_fetch_assoc($findschool_idresult)) {
             $findschool_idarray[] = $row['school_id']; 
@@ -259,6 +262,8 @@ function submitposting(){
                 from ranking r, school_posting sp
                 where r.posting_id = sp.posting_id 
                 having posting_id = (select posting_id from school_posting where student_nric = '".$_SESSION["student_nric"]."') ;";    
+        //select posting_id from ranking table to check if there is any exisiting row available 
+        // if have means the student already submitted record before
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
@@ -269,8 +274,9 @@ function submitposting(){
         
         else {
         
-        $sql = "select posting_id from student_info si , school_posting sp where si.student_nric = sp.student_nric and name = '".$_SESSION["name"]."'";
-        
+        $sql = "select posting_id from student_info si , school_posting sp "
+                . "where si.student_nric = sp.student_nric and name = '".$_SESSION["name"]."'";
+        //select posting_id based on student_nric which will be only 1 posting_id
         $result = $conn->query($sql);
         $rs = mysqli_fetch_array($result);
         $clientid = $rs[0];
@@ -281,6 +287,7 @@ function submitposting(){
         
         
         $sql = "SELECT school_id FROM school_info;";
+        // select all school_id to make comparison
         $schoolIDresult = $conn->query($sql);
          while($row = mysqli_fetch_assoc($schoolIDresult)) {
             $players[] = $row['school_id']; 
@@ -299,6 +306,8 @@ function submitposting(){
         $sql4 = "insert into ranking (school_id, posting_id, choice_number) VALUES($cars[3], $clientid, 4)";
         $sql5 = "insert into ranking (school_id, posting_id, choice_number) VALUES($cars[4], $clientid, 5)";
         $sql6 = "insert into ranking (school_id, posting_id, choice_number) VALUES($cars[5], $clientid, 6)";
+        // cars array are user input which consist of 6 choices
+        // clientid will be the posting_id of the student that stored from the result from the previous sql
         
         if (($conn->query($sql1) && $conn->query($sql2) && $conn->query($sql3) && $conn->query($sql4) && $conn->query($sql5)
                 && $conn->query($sql6))=== TRUE) 
@@ -308,9 +317,13 @@ function submitposting(){
                     where s.school_id= r.school_id
                     and posting_id = $clientid
                     order by choice_number";
+                    //select statement to show school_id, school_name and choice number based after inserting sql
                     
             
             $result = $conn->query($sql);
+            $message = "All slots submitted!";
+            echo "<script type='text/javascript'>alert('$message'); "
+            . "window.location.href='http://localhost/2103project/posting.php';</script>";
             if (!empty($result) && $result->num_rows > 0) {
         // output data of each row
                     echo '<br><br><br>';
@@ -395,6 +408,7 @@ function viewresult(){
             and posting_id = ( SELECT posting_id FROM school_posting where student_name = '".$_SESSION["name"]."')
             order by choice_number
             ";    
+    // after student submitted all 6 choices, this select statement is to retrieve school_info based on school_id
     $result = $conn->query($sql);
     
     $result = $conn->query($sql);
@@ -450,28 +464,36 @@ function updateposting(){
           if(isset($_POST["updatebutton"]))
             {
          
-            $sql =  "SELECT posting_id FROM school_posting where student_NRIC = '".$_SESSION["student_nric"]."' ";    
+            $sql =  "SELECT posting_id FROM school_posting "
+                    . "where student_NRIC = '".$_SESSION["student_nric"]."' ";    
+            //in order to update posting, select statement is used to capture the posting_id 
+            //base on this student nric
             $result = $conn->query($sql);
             while($row = mysqli_fetch_assoc($result)) {
                     $posting_idForUpdate[] = $row['posting_id']; 
             }
         $cars = array($firstchoice,$secondchoice,$thirdchoice,$fourthchoice,$fifthchoice,$sixthchoice);
+        //store user updated 6 choices
         $unique_colors = array_unique($cars);
         $duplicates = count($cars) - count($unique_colors); //if result more than 1, means there is duplicate
         
         
         $sql = "SELECT school_id FROM school_info;";
+        //select all school_id for comparison with posting_id executed previously
         $schoolIDresult = $conn->query($sql);
          while($row = mysqli_fetch_assoc($schoolIDresult)) {
             $players[] = $row['school_id']; 
          }
-        //print_r($players);
+        //store all school_id into an array 
 
         $cmpresult = array_diff($cars,$players);
+        //compare school_id with posting_id
         //print_r(count($cmpresult));
         
         if ($duplicates<1 ){
-            if (((count($cmpresult))==0)){    
+            // check for duplicate
+            if (((count($cmpresult))==0)){   
+                //check if school_id is valid
     
     $sql1 = "update ranking set school_id = $firstchoice where posting_id = $posting_idForUpdate[0] and choice_number = '1' ";
     $sql2 = "update ranking set school_id = $secondchoice where posting_id = $posting_idForUpdate[0] and choice_number = '2' ";
@@ -479,7 +501,12 @@ function updateposting(){
     $sql4 = "update ranking set school_id = $fourthchoice where posting_id = $posting_idForUpdate[0] and choice_number = '4' ";
     $sql5 = "update ranking set school_id = $fifthchoice where posting_id = $posting_idForUpdate[0] and choice_number = '5' ";
     $sql6 = "update ranking set school_id = $sixthchoice where posting_id = $posting_idForUpdate[0] and choice_number = '6' ";
+    //update statement is executed based on the user input
+    //$firstchoice ...$sixthchoice are all 6 user input
+    //$posting_idForUpdate are identical because all student will have only 1 posting_id that was assigned initially
+    //choice_number is fixed, from 1 to 6
 
+    
     if (($conn->query($sql1) && $conn->query($sql2) && $conn->query($sql3) && $conn->query($sql4) && $conn->query($sql5)
                 && $conn->query($sql6))=== TRUE) 
         {
@@ -520,12 +547,14 @@ function deleteposting(){
      {
      if(isset($_POST["deletebutton"]))
     {
-    $sql = "SELECT posting_id from school_posting where student_NRIC = '".$_SESSION["student_nric"]."'";     
+    $sql = "SELECT posting_id from school_posting where student_NRIC = '".$_SESSION["student_nric"]."'";   
+    //select posting_id based on student_nric
     $result = $conn->query($sql);
     $rs = mysqli_fetch_array($result);
     $clientid = $rs[0];
     $sql1 =  "DELETE FROM ranking where posting_id = $rs[0] ";    
-
+    //delete all posting based on posting
+    //rs[0] is the posting_id that belong to the student that was assigned from the start
     $result1 = $conn->query($sql1);
             if ($result1 == TRUE) {
                 $message = "All records in posting deleted";
