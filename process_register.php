@@ -353,11 +353,12 @@ function saveMemberToDB(){
     }
     else
     {
-    $sql1 = "INSERT INTO student_info VALUES('$nric', '$fname', '$pwd','$agg','$dob',$pyear,'$mt','$nationality','$pschool','$add1','$add2','$contact','$email')";
-    $sql2 = "INSERT INTO guard_info VALUES('$gnric', '$nric','$gname','$gcontact','$relate','$gadd1','$gadd2','$occupy','$gnation')";
+    $sql1 = "INSERT INTO student_info VALUES('$nric', '$fname', '$pwd','$agg','$dob',$pyear,'$mt','$nationality'"
+            . ",'$pschool','$add1','$add2','$contact','$email')";
+    $sql2 = "INSERT INTO guard_info VALUES('$gnric', '$nric','$gname','$gcontact','$relate','$gadd1','$gadd2'"
+            . ",'$occupy','$gnation')";
     
-    echo $sql1."<br><br>";
-    echo $sql2."<br><br>";
+
     
     // Execute the queryif (!$conn->query($sql))   
     if (!$conn->query($sql1))

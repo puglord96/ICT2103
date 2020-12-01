@@ -33,9 +33,11 @@
             }else{
                     $psle = mysqli_real_escape_string($conn, $psle);
 
-                    $minExpressResult = $conn->query("SELECT MIN(express) FROM school_cop_2019 where express > 0"); //gets the minimum cut off point for 
+                    $minExpressResult = $conn->query("SELECT MIN(express) FROM school_cop_2019 where express > 0"); 
+                    //gets the minimum cut off point for  express
                     $minNaResult = $conn->query("SELECT MIN(na) FROM school_cop_2019 where na > 0");
-
+                    //gets the minimum cut off point for  NA
+                    // check if the agg score matches Express or NA
                     if($minExpressResult->num_rows > 0){
                         $rowMinExpress = $minExpressResult->fetch_assoc();
                         $minExpress = $rowMinExpress["MIN(express)"];
@@ -60,8 +62,14 @@
                         echo '<h3>YOU ARE ELIGIBLE FOR: Express Stream</h3>';
                         $stream = "express";
                         echo "<br>";
-                        $expsql = $conn->query("SELECT school_id,express FROM school_cop_2019 WHERE express = (SELECT MAX(express) FROM school_cop_2019 WHERE ('$psle' >= express) AND express != 0 )"
-                        ."UNION SELECT school_id,express_affiliated FROM school_cop_2019 WHERE express_affiliated = (SELECT MAX(express_affiliated) FROM school_cop_2019 WHERE ('$psle' >= express_affiliated) AND express_affiliated != 0 )");
+                        $expsql = $conn->query("SELECT school_id,express FROM school_cop_2019 "
+                                . "WHERE express = (SELECT MAX(express) "
+                                . "FROM school_cop_2019 WHERE ('$psle' >= express) AND express != 0 )"
+                        ."UNION SELECT school_id,express_affiliated FROM school_cop_2019 "
+                                . "WHERE express_affiliated = (SELECT MAX(express_affiliated) "
+                                . "FROM school_cop_2019 WHERE ('$psle' >= express_affiliated) "
+                                . "AND express_affiliated != 0 )");
+                        // will be able to find school that matches with the agg score in a desc order in express stream
                         while($row = mysqli_fetch_array($expsql))
                         {
                             $schoolIDs .= $row['school_id'] . ',';
@@ -81,8 +89,14 @@
                     }else if(($psle >= $minNa) && ($minNa != NULL)){
                         echo '<h3>YOU ARE ELIGIBLE FOR: NA</h3>';
                         $stream = "na";
-                        $nasql = $conn->query("SELECT school_id,na FROM school_cop_2019 WHERE na = (SELECT MAX(na) FROM school_cop_2019 WHERE ('$psle' >= na) AND (na!= 0) )"
-                        ."UNION SELECT school_id,na_affiliated FROM school_cop_2019 WHERE na_affiliated = (SELECT MAX(na_affiliated) FROM school_cop_2019 WHERE ('$psle' >= na_affiliated) AND (na_affiliated != 0) )");
+                        $nasql = $conn->query("SELECT school_id,na FROM school_cop_2019 "
+                                . "WHERE na = (SELECT MAX(na) FROM school_cop_2019 "
+                                . "WHERE ('$psle' >= na) AND (na!= 0) )"
+                        ."UNION SELECT school_id,na_affiliated FROM school_cop_2019 "
+                                . "WHERE na_affiliated = (SELECT MAX(na_affiliated) "
+                                . "FROM school_cop_2019 WHERE ('$psle' >= na_affiliated) "
+                                . "AND (na_affiliated != 0) )");
+                        // will be able to find school that matches with the agg score in a desc order in NA stream
                         while($row = mysqli_fetch_array($nasql))
                         {
                             $schoolIDs .= $row['school_id'] . ',';
@@ -102,8 +116,12 @@
                     } else {
                         echo '<h3>YOU ARE ELIGIBLE FOR: NT</h3>';
                         $stream = "nt";
-                        $ntsql = $conn->query("SELECT school_id,nt FROM school_cop_2019 WHERE nt = (SELECT MAX(nt) FROM school_cop_2019 WHERE '$psle' >= nt )"
-                        ."UNION SELECT school_id,nt_affiliated FROM school_cop_2019 WHERE nt_affiliated = (SELECT MAX(nt_affiliated) FROM school_cop_2019 WHERE '$psle' >= nt_affiliated )");
+                        $ntsql = $conn->query("SELECT school_id,nt FROM school_cop_2019 "
+                                . "WHERE nt = (SELECT MAX(nt) FROM school_cop_2019 WHERE '$psle' >= nt )"
+                        ."UNION SELECT school_id,nt_affiliated FROM school_cop_2019 "
+                                . "WHERE nt_affiliated = (SELECT MAX(nt_affiliated) "
+                                . "FROM school_cop_2019 WHERE '$psle' >= nt_affiliated )");
+                        // will be able to find school that matches with the agg score in a desc order in nt stream
                         while($row = mysqli_fetch_array($ntsql))
                         {
                             $schoolIDs .= $row['school_id'] . ',';

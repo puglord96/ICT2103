@@ -2,7 +2,7 @@
     
     <?php
     include "header.inc.php";
-    
+    //check session ensure user must login
     if (empty($_SESSION["name"])) {
     $message = "Unauthorized access, please login or create account";
     echo "<script type='text/javascript'>alert('$message'); "
@@ -76,7 +76,7 @@ if (isset($_POST["feedbackbutton"]) && (isset($_POST["fbType"])) && (!empty($_PO
 else
 {
     
-    echo"Remember to choose an area";
+    echo"Remember to submit";
 }
 
     
@@ -96,7 +96,9 @@ function postfeedback(){
     {
 
     $sql = "insert into feedback (student_NRIC, type_of_feedback, feedback_text)
-            VALUES ('".$_SESSION["student_nric"]."', '$fbType', '$feedback')";    
+            VALUES ('".$_SESSION["student_nric"]."', '$fbType', '$feedback')";   
+    //insert into feedback table
+    // with type of posting and the content of the feedback
     $result = $conn->query($sql);
 
     if ($result) {
